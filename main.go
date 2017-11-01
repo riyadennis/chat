@@ -4,7 +4,8 @@ import (
 	"net/http"
 	"sync"
 	"html/template"
-	"os"
+	"fmt"
+	"path/filepath"
 )
 
 type TemplateHandler struct {
@@ -20,8 +21,9 @@ func NewTemplateHandler(fileName string) *TemplateHandler {
 }
 func (t *TemplateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	t.Once.Do(func() {
-		pwd, _ := os.Getwd()
-		t.Template = template.Must(template.ParseFiles(pwd + "/chatapp/templates/" + t.FileName))
+		rootPath, _ := filepath.Abs("templates")
+		path := filepath.Join(rootPath, t.FileName)
+		t.Template = template.Must(template.ParseFiles(path))
 	})
 	t.Template.Execute(w, nil)
 }
@@ -29,5 +31,8 @@ func (t *TemplateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 func main() {
 	templateHandler := NewTemplateHandler("chat.html")
 	http.Handle("/", templateHandler)
-	http.ListenAndServe(":8080", nil)
+	err :=http.ListenAndServe(":8080", nil)
+	if err != nil {
+		fmt.Println(err)
+	}
 }
