@@ -4,8 +4,8 @@ import (
 	"net/http"
 	"sync"
 	"html/template"
-	"fmt"
 	"path/filepath"
+	"github.com/sirupsen/logrus"
 )
 
 type TemplateHandler struct {
@@ -33,6 +33,6 @@ func main() {
 	http.Handle("/", templateHandler)
 	err :=http.ListenAndServe(":8080", nil)
 	if err != nil {
-		fmt.Println(err)
+		logrus.Errorf("Web server run failed with error %s", err.Error())
 	}
 }
