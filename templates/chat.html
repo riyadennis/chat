@@ -3,10 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <title>my chat app</title>
+    <style type="text/css">
+        #chatText {
+            margin: 0px;
+            width: 358px;
+            height: 52px;
+        }
+        input{
+            display: block;
+        }
+        ul{
+            list-style: none;
+        }
+    </style>
 </head>
 <body>
-    <h1>
-        Lets chat!
-    </h1>
+<ul id="messages"></ul>
+<form id="chatbox">
+    <textarea id="chatText"></textarea>
+    <input type="submit" value="send"/>
+</form>
 </body>
 </html>
