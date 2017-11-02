@@ -29,8 +29,11 @@ func (t *TemplateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	room := newRoom()
 	templateHandler := NewTemplateHandler("chat.html")
 	http.Handle("/", templateHandler)
+	http.Handle("/room", room)
+	go room.Run()
 	err :=http.ListenAndServe(":8080", nil)
 	if err != nil {
 		logrus.Errorf("Web server run failed with error %s", err.Error())
