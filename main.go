@@ -36,8 +36,14 @@ func (t *TemplateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
+	rootPath, _ := filepath.Abs("templates")
+	//making the folder templates accessible
+	fs := http.FileServer(http.Dir(rootPath))
+	http.Handle("/", fs)
+
 	templateHandler := NewTemplateHandler("chat.html")
-	http.Handle("/", templateHandler)
+	http.Handle("/chat", templateHandler)
+
 	http.HandleFunc("/room", HandleConnection)
 	go ReadMessages()
 	err := http.ListenAndServe(":8080", nil)
