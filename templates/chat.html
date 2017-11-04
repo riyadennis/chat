@@ -1,6 +1,10 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"
+            integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+            crossorigin="anonymous">
+    </script>
     <meta charset="UTF-8">
     <title>my chat app</title>
     <style type="text/css">
@@ -9,13 +13,41 @@
             width: 358px;
             height: 52px;
         }
-        input{
+
+        input {
             display: block;
         }
-        ul{
+
+        ul {
             list-style: none;
         }
     </style>
+    <script>
+        $(function () {
+            var msg = $("#messages")
+            $("#chatbox").submit(function (socket) {
+                if ($('#chatText').val() == "") {
+                    return false;
+                }
+                if (socket == null) {
+                    alert("Error: no socket found");
+                    return false;
+                }
+                exampleSocket.send($('#chatText').val())
+                $('#chatText').val("")
+                return false;
+            });
+            var exampleSocket = new WebSocket("ws://localhost:8080/room");
+            exampleSocket.onopen = function (event) {
+                exampleSocket.send("Some body new have joined!");
+            };
+
+            exampleSocket.onmessage = function (event) {
+                $("#messages").append("<li>"+event.data+"</li>")
+            }
+
+        });
+    </script>
 </head>
 <body>
 <ul id="messages"></ul>

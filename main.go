@@ -6,7 +6,13 @@ import (
 	"html/template"
 	"path/filepath"
 	"github.com/sirupsen/logrus"
+	"github.com/gorilla/websocket"
+	"fmt"
 )
+
+var clients = make(map[*websocket.Conn]bool)
+var broadCasts = make(chan []byte)
+var upgrader = websocket.Upgrader{}
 
 type TemplateHandler struct {
 	Once     sync.Once
@@ -19,6 +25,7 @@ func NewTemplateHandler(fileName string) *TemplateHandler {
 		FileName: fileName,
 	}
 }
+
 func (t *TemplateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	t.Once.Do(func() {
 		rootPath, _ := filepath.Abs("templates")
@@ -29,13 +36,40 @@ func (t *TemplateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	room := newRoom()
 	templateHandler := NewTemplateHandler("chat.html")
 	http.Handle("/", templateHandler)
-	http.Handle("/room", room)
-	go room.Run()
-	err :=http.ListenAndServe(":8080", nil)
+	http.HandleFunc("/room", HandleConnection)
+	go ReadMessages()
+	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
 		logrus.Errorf("Web server run failed with error %s", err.Error())
+	}
+}
+
+func HandleConnection(w http.ResponseWriter, req *http.Request) {
+	socket, err := upgrader.Upgrade(w, req, nil)
+	if err != nil {
+		logrus.Errorf("Unable to access socket %s", err.Error())
+		return
+	}
+	defer socket.Close()
+	clients[socket] = true
+	for {
+		_, message, err := socket.ReadMessage()
+		if err != nil {
+			logrus.Errorf("Unable to read message: %s", err.Error())
+			break
+		}
+		broadCasts <- message
+	}
+}
+
+func ReadMessages() {
+	for {
+		message := <-broadCasts
+		fmt.Println(string(message))
+		for client := range clients {
+			client.WriteMessage(websocket.TextMessage, message)
+		}
 	}
 }
