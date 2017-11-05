@@ -8,10 +8,10 @@ import (
 	"github.com/sirupsen/logrus"
 	"github.com/gorilla/websocket"
 	"fmt"
+	"github.com/chat/lib"
 )
 
 var clients = make(map[*websocket.Conn]bool)
-var broadCasts = make(chan []byte)
 var upgrader = websocket.Upgrader{}
 
 type TemplateHandler struct {
@@ -42,37 +42,20 @@ func main() {
 	http.Handle("/", fs)
 
 	templateHandler := NewTemplateHandler("chat.html")
+	roomHandler := lib.Room{Clients: clients, Upgrader: upgrader, Broadcast: make(chan []byte)}
 	http.Handle("/chat", templateHandler)
+	http.Handle("/room", &roomHandler)
 
-	http.HandleFunc("/room", HandleConnection)
-	go ReadMessages()
+	go ReadMessages(&roomHandler)
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
 		logrus.Errorf("Web server run failed with error %s", err.Error())
 	}
 }
 
-func HandleConnection(w http.ResponseWriter, req *http.Request) {
-	socket, err := upgrader.Upgrade(w, req, nil)
-	if err != nil {
-		logrus.Errorf("Unable to access socket %s", err.Error())
-		return
-	}
-	defer socket.Close()
-	clients[socket] = true
+func ReadMessages(roomHandler *lib.Room) {
 	for {
-		_, message, err := socket.ReadMessage()
-		if err != nil {
-			logrus.Errorf("Unable to read message: %s", err.Error())
-			break
-		}
-		broadCasts <- message
-	}
-}
-
-func ReadMessages() {
-	for {
-		message := <-broadCasts
+		message := <-roomHandler.Broadcast
 		fmt.Println(string(message))
 		for client := range clients {
 			client.WriteMessage(websocket.TextMessage, message)
