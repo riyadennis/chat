@@ -6,8 +6,6 @@ import (
 	"html/template"
 	"path/filepath"
 	"github.com/sirupsen/logrus"
-	"github.com/gorilla/websocket"
-	"fmt"
 	"github.com/chat/lib"
 )
 
@@ -29,7 +27,7 @@ func (t *TemplateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		path := filepath.Join(rootPath, t.FileName)
 		t.Template = template.Must(template.ParseFiles(path))
 	})
-	t.Template.Execute(w, nil)
+	t.Template.Execute(w, r)
 }
 
 func main() {
@@ -44,6 +42,7 @@ func main() {
 	http.Handle("/room", roomHandler)
 
 	go roomHandler.BroadCastMessages()
+
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
 		logrus.Errorf("Web server run failed with error %s", err.Error())

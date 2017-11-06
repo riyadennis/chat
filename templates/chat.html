@@ -37,7 +37,7 @@
                 $('#chatText').val("")
                 return false;
             });
-            var exampleSocket = new WebSocket("ws://localhost:8080/room");
+            var exampleSocket = new WebSocket("ws://{{.Host}}/room");
             exampleSocket.onopen = function (event) {
                 exampleSocket.send("Some body new have joined!");
             };
