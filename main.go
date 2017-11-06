@@ -14,9 +14,11 @@ func main() {
 	fs := http.FileServer(http.Dir(rootPath))
 	http.Handle("/", fs)
 
-	templateHandler := lib.NewTemplateHandler("chat.html")
+	chatTemplateHandler := lib.NewTemplateHandler("chat.html")
+	loginTemplateHandler :=lib.NewTemplateHandler("login.html")
 	roomHandler := lib.NewRoom()
-	http.Handle("/chat", lib.MustAuth(templateHandler))
+	http.Handle("/chat", lib.MustAuth(chatTemplateHandler))
+	http.Handle("/login", loginTemplateHandler)
 	http.Handle("/room", roomHandler)
 
 	go roomHandler.BroadCastMessages()
