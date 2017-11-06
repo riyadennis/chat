@@ -12,7 +12,7 @@ func TestNew(t *testing.T){
 		t.Error("Tracer should not return null")
 	} else {
 		tracer.Trace("Hello Trace Package")
-		if buf.String() != "Hello Trace Package"{
+		if buf.String() != "Hello Trace Package\n"{
 			t.Errorf("Trace should not write %s", buf.String())
 		}
 	}
