@@ -7,6 +7,7 @@ import (
 	"path/filepath"
 	"github.com/sirupsen/logrus"
 	"github.com/chat/lib"
+	"flag"
 )
 
 type TemplateHandler struct {
@@ -42,8 +43,10 @@ func main() {
 	http.Handle("/room", roomHandler)
 
 	go roomHandler.BroadCastMessages()
-
-	err := http.ListenAndServe(":8080", nil)
+	var address = flag.String("address", ":8080", "Port to which webserver will listen")
+	flag.Parse()
+	logrus.Infof("Listening to port %s", *address)
+	err := http.ListenAndServe(*address, nil)
 	if err != nil {
 		logrus.Errorf("Web server run failed with error %s", err.Error())
 	}
