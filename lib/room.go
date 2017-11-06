@@ -5,51 +5,50 @@ import (
 	"net/http"
 	"github.com/sirupsen/logrus"
 	"github.com/chat/trace"
-	"os"
 )
 
 type Room struct {
-	Clients   map[*websocket.Conn]bool
-	Upgrader  websocket.Upgrader
-	Broadcast chan []byte
-	Tracer trace.Tracer
+	clients   map[*websocket.Conn]bool
+	upgrader  websocket.Upgrader
+	broadcast chan []byte
+	tracer trace.Tracer
 }
 
 func NewRoom() *Room {
 	return &Room{
-		Clients:   make(map[*websocket.Conn]bool),
-		Upgrader:  websocket.Upgrader{},
-		Broadcast: make(chan []byte),
-		Tracer: trace.New(os.Stdout),
+		clients:   make(map[*websocket.Conn]bool),
+		upgrader:  websocket.Upgrader{},
+		broadcast: make(chan []byte),
+		tracer: trace.Off(),
 	}
 }
 
 func (r *Room) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-	socket, err := r.Upgrader.Upgrade(w, req, nil)
+	socket, err := r.upgrader.Upgrade(w, req, nil)
 	if err != nil {
-		r.Tracer.Trace("Unable to access socket")
+		r.tracer.Trace("Unable to access socket")
 		logrus.Errorf("Unable to access socket %s", err.Error())
 		return
 	}
 	defer socket.Close()
-	r.Clients[socket] = true
-	r.Tracer.Trace("Created a new client")
+	r.clients[socket] = true
+	r.tracer.Trace("Created a new client")
 	for {
 		_, message, err := socket.ReadMessage()
 		if err != nil {
-			r.Tracer.Trace("Unable to read message")
+			r.tracer.Trace("Unable to read message")
 			logrus.Errorf("Unable to read message: %s", err.Error())
 			break
 		}
-		r.Broadcast <- message
+		r.broadcast <- message
 	}
 }
 
 func (r *Room) BroadCastMessages() {
 	for {
-		message := <-r.Broadcast
-		r.Tracer.Trace("Message:",string(message))
-		for client := range r.Clients {
+		message := <-r.broadcast
+		r.tracer.Trace("Message:",string(message))
+		for client := range r.clients {
 			client.WriteMessage(websocket.TextMessage, message)
 		}
 	}
