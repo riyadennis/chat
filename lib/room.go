@@ -11,6 +11,13 @@ type Room struct{
 	Upgrader websocket.Upgrader
 	Broadcast chan []byte
 }
+func NewRoom() *Room{
+	return &Room{
+		Clients:make(map[*websocket.Conn]bool),
+		Upgrader:websocket.Upgrader{},
+		Broadcast:make(chan []byte),
+	}
+}
 
 func (r *Room) ServeHTTP(w http.ResponseWriter, req *http.Request){
 	socket, err := r.Upgrader.Upgrade(w, req, nil)

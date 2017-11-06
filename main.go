@@ -11,9 +11,6 @@ import (
 	"github.com/chat/lib"
 )
 
-var clients = make(map[*websocket.Conn]bool)
-var upgrader = websocket.Upgrader{}
-
 type TemplateHandler struct {
 	Once     sync.Once
 	FileName string
@@ -42,11 +39,11 @@ func main() {
 	http.Handle("/", fs)
 
 	templateHandler := NewTemplateHandler("chat.html")
-	roomHandler := lib.Room{Clients: clients, Upgrader: upgrader, Broadcast: make(chan []byte)}
+	roomHandler := lib.NewRoom()
 	http.Handle("/chat", templateHandler)
-	http.Handle("/room", &roomHandler)
+	http.Handle("/room", roomHandler)
 
-	go ReadMessages(&roomHandler)
+	go ReadMessages(roomHandler)
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
 		logrus.Errorf("Web server run failed with error %s", err.Error())
@@ -57,7 +54,7 @@ func ReadMessages(roomHandler *lib.Room) {
 	for {
 		message := <-roomHandler.Broadcast
 		fmt.Println(string(message))
-		for client := range clients {
+		for client := range roomHandler.Clients {
 			client.WriteMessage(websocket.TextMessage, message)
 		}
 	}
