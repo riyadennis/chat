@@ -43,19 +43,9 @@ func main() {
 	http.Handle("/chat", templateHandler)
 	http.Handle("/room", roomHandler)
 
-	go ReadMessages(roomHandler)
+	go roomHandler.BroadCastMessages()
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
 		logrus.Errorf("Web server run failed with error %s", err.Error())
-	}
-}
-
-func ReadMessages(roomHandler *lib.Room) {
-	for {
-		message := <-roomHandler.Broadcast
-		fmt.Println(string(message))
-		for client := range roomHandler.Clients {
-			client.WriteMessage(websocket.TextMessage, message)
-		}
 	}
 }
