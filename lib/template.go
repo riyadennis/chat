@@ -5,6 +5,7 @@ import (
 	"path/filepath"
 	"html/template"
 	"net/http"
+	"github.com/sirupsen/logrus"
 )
 
 type TemplateHandler struct {
@@ -21,9 +22,18 @@ func NewTemplateHandler(fileName string) *TemplateHandler {
 
 func (t *TemplateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	t.Once.Do(func() {
+		var err error
 		rootPath, _ := filepath.Abs("templates")
 		path := filepath.Join(rootPath, t.FileName)
-		t.Template = template.Must(template.ParseFiles(path))
+		t.Template, err = template.ParseFiles(path)
+		if err!=nil{
+			logrus.Error(err)
+			w.WriteHeader(http.StatusInternalServerError)
+			return
+		}
 	})
-	t.Template.Execute(w, r)
+	if t.Template!=nil{
+		t.Template.Execute(w, r)
+	}
+
 }
