@@ -1,10 +1,10 @@
-package lib
+package handlers
 
 import (
-	"testing"
+	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
-	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 type MockHandler struct{}
@@ -26,7 +26,7 @@ func TestMustAuth(t *testing.T) {
 }
 func TestAuthHandlerServeHTTPWithCookie(t *testing.T) {
 	rr := httptest.NewRecorder()
-	http.SetCookie(rr,&http.Cookie{Name:"auth", Value:"test"})
+	http.SetCookie(rr, &http.Cookie{Name: "auth", Value: "test"})
 	//request with cookie
 	request := &http.Request{Header: http.Header{"Cookie": rr.HeaderMap["Set-Cookie"]}}
 	mh := &MockHandler{}
@@ -60,7 +60,7 @@ func TestCheckHttpErrorWithOutCookie(t *testing.T) {
 
 func TestCheckHttpErrorWithCookie(t *testing.T) {
 	rr := httptest.NewRecorder()
-	http.SetCookie(rr,&http.Cookie{Name:"auth", Value:"test"})
+	http.SetCookie(rr, &http.Cookie{Name: "auth", Value: "test"})
 	//request with cookie
 	request := &http.Request{Header: http.Header{"Cookie": rr.HeaderMap["Set-Cookie"]}}
 	httpError := CheckCookie(rr, request)
@@ -69,7 +69,7 @@ func TestCheckHttpErrorWithCookie(t *testing.T) {
 }
 func TestCheckHttpErrorWithWrongCookie(t *testing.T) {
 	rr := httptest.NewRecorder()
-	http.SetCookie(rr,&http.Cookie{Name:"wrongcookie", Value:"test"})
+	http.SetCookie(rr, &http.Cookie{Name: "wrongcookie", Value: "test"})
 	//request with cookie
 	request := &http.Request{Header: http.Header{"Cookie": rr.HeaderMap["Set-Cookie"]}}
 	httpError := CheckCookie(rr, request)

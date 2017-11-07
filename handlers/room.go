@@ -1,17 +1,17 @@
-package lib
+package handlers
 
 import (
-	"github.com/gorilla/websocket"
-	"net/http"
-	"github.com/sirupsen/logrus"
 	"github.com/chat/trace"
+	"github.com/gorilla/websocket"
+	"github.com/sirupsen/logrus"
+	"net/http"
 )
 
 type Room struct {
 	clients   map[*websocket.Conn]bool
 	upgrader  websocket.Upgrader
 	broadcast chan []byte
-	tracer trace.Tracer
+	tracer    trace.Tracer
 }
 
 func NewRoom() *Room {
@@ -19,7 +19,7 @@ func NewRoom() *Room {
 		clients:   make(map[*websocket.Conn]bool),
 		upgrader:  websocket.Upgrader{},
 		broadcast: make(chan []byte),
-		tracer: trace.Off(),
+		tracer:    trace.Off(),
 	}
 }
 
@@ -47,7 +47,7 @@ func (r *Room) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 func (r *Room) BroadCastMessages() {
 	for {
 		message := <-r.broadcast
-		r.tracer.Trace("Message:",string(message))
+		r.tracer.Trace("Message:", string(message))
 		for client := range r.clients {
 			client.WriteMessage(websocket.TextMessage, message)
 		}

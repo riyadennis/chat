@@ -1,12 +1,12 @@
-package lib
+package handlers
 
 import (
+	"fmt"
+	"github.com/chat/config"
+	"github.com/stretchr/gomniauth"
+	"github.com/stretchr/gomniauth/providers/google"
 	"net/http"
 	"strings"
-	"fmt"
-	"github.com/stretchr/gomniauth"
-	"github.com/chat/config"
-	"github.com/stretchr/gomniauth/providers/google"
 )
 
 type authHandler struct {

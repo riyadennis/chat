@@ -1,10 +1,10 @@
-package lib
+package handlers
 
 import (
-	"testing"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
+	"testing"
 )
 
 func TestNewTemplateHandler(t *testing.T) {

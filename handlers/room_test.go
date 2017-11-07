@@ -1,12 +1,12 @@
-package lib
+package handlers
 
 import (
-	"testing"
-	"net/http"
-	"github.com/stretchr/testify/assert"
-	"net/http/httptest"
-	"github.com/gorilla/websocket"
 	"fmt"
+	"github.com/gorilla/websocket"
+	"github.com/stretchr/testify/assert"
+	"net/http"
+	"net/http/httptest"
+	"testing"
 )
 
 func TestNewRoom(t *testing.T) {
@@ -34,7 +34,7 @@ func TestRoomServeHTTPWithWebSocketRequest(t *testing.T) {
 		t.Fatal(error)
 	}
 	//assert that we established a full duplex connection
-	assert.Equal(t, response.Status,"101 Switching Protocols" )
+	assert.Equal(t, response.Status, "101 Switching Protocols")
 	connection.WriteMessage(websocket.TextMessage, []byte(message))
 	messageFromChannel := <-roomHandler.broadcast
 	//assert that we have message recieved
