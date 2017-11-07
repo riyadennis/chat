@@ -5,6 +5,8 @@ import (
 	"strings"
 	"fmt"
 	"github.com/stretchr/gomniauth"
+	"github.com/chat/config"
+	"github.com/stretchr/gomniauth/providers/google"
 )
 
 type authHandler struct {
@@ -35,6 +37,17 @@ func CheckCookie(w http.ResponseWriter, r *http.Request) int {
 }
 func MustAuth(handler http.Handler) http.Handler {
 	return &authHandler{next: handler}
+}
+func SetupAuth(conf *config.Config) {
+	gomniauth.SetSecurityKey(conf.Auth.Security)
+	for _, provider := range conf.Auth.Providers {
+		fmt.Print(provider.Name)
+		if provider.Name == "google" {
+			gomniauth.WithProviders(
+				google.New(provider.Client, provider.Secret, provider.Url),
+			)
+		}
+	}
 }
 func (lh loginProviderHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	uri := strings.Split(r.URL.RequestURI(), "/")

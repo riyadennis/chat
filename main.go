@@ -5,10 +5,9 @@ import (
 	"path/filepath"
 	"github.com/sirupsen/logrus"
 	"github.com/chat/lib"
+	"github.com/chat/config"
 	"flag"
 	"github.com/gorilla/mux"
-	"github.com/stretchr/gomniauth"
-	"github.com/stretchr/gomniauth/providers/google"
 )
 
 func main() {
@@ -31,13 +30,8 @@ func main() {
 	var address = flag.String("address", ":8080", "Port to which web server will listen")
 	flag.Parse()
 	logrus.Infof("Listening to port %s", *address)
-	//conf := config.ParseConfig("config.yaml")
-	//config.AddProviders(conf)
-	gomniauth.SetSecurityKey("AIzaSyBo1V1NqpsCmuLRhe7RTvGR2Njb9kjkjj3oFOqM99ioiL")
-	gomniauth.WithProviders(
-		google.New("620226514233-f2lssbjdrvfnmjh4svofs5qm51kpqtot.apps.googleusercontent.com","qBiynOAr9qZsfhAJbXNnCWdp","http://localhost:8080/auth/callback/google"),
-	)
-
+	conf := config.ParseConfig("config.yaml")
+	lib.SetupAuth(conf)
 	err := http.ListenAndServe(*address, r)
 	if err != nil {
 		logrus.Errorf("Web server run failed with error %s", err.Error())

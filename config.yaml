@@ -1,5 +1,5 @@
 auth:
-  security-key: AIzaSyBo1V1NqpsCmuLRhe7RTvGR2Njb9kjkjj3oFOqM99ioiL
+  security: qBAbLFsUqEq85IEzlkebtqKde0Pybyw7ddzV8Gnk13JD3d1qMo1vBilrCV3j7B9k
   providers:
     - name: google
       client: 620226514233-f2lssbjdrvfnmjh4svofs5qm51kpqtot.apps.googleusercontent.com

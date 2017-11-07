@@ -12,7 +12,7 @@ type Config struct {
 	Auth Auth
 }
 type Auth struct {
-	SecurityKey string
+	Security string
 	Providers []Provider
 }
 type Provider struct {
