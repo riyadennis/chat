@@ -5,6 +5,7 @@ import (
 	"github.com/stretchr/gomniauth"
 	"strings"
 	"net/http"
+	"github.com/sirupsen/logrus"
 )
 
 type loginHandler struct{}
@@ -21,17 +22,26 @@ func (lh loginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		w.WriteHeader(http.StatusNotFound)
 		fmt.Fprintf(w, "Authentication action %s is not supported", action)
 	}
-	gprovider, err := gomniauth.Provider(provider)
+	loginUrl, err := getLoginURL(provider)
 	if err != nil {
-		http.Error(w, fmt.Sprintf("Access the provider %s encountered error %s", provider, err.Error()), http.StatusInternalServerError)
-		return
-	}
-	loginUrl, err := gprovider.GetBeginAuthURL(nil, nil)
-	if err != nil {
-		http.Error(w, fmt.Sprintf("Error when trying to begin URL %s", loginUrl), http.StatusInternalServerError)
-		return
+		http.Error(w, err.Error(), http.StatusInternalServerError)
+		logrus.Error(err)
 	}
 	w.Header().Set("Location", loginUrl)
 	w.WriteHeader(http.StatusTemporaryRedirect)
 }
 
+/**
+Gets the login url from the provider
+ */
+func getLoginURL(provider string) (string, error) {
+	gprovider, err := gomniauth.Provider(provider)
+	if err != nil {
+		return "", err
+	}
+	loginUrl, err := gprovider.GetBeginAuthURL(nil, nil)
+	if err != nil {
+		return "", err
+	}
+	return loginUrl, nil
+}
