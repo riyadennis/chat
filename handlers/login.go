@@ -6,6 +6,8 @@ import (
 	"strings"
 	"net/http"
 	"github.com/sirupsen/logrus"
+	"github.com/stretchr/objx"
+	"github.com/stretchr/gomniauth/common"
 )
 
 type loginHandler struct{}
@@ -27,8 +29,15 @@ func (lh loginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, err.Error(), http.StatusInternalServerError)
 		logrus.Error(err)
 	}
+	//user, err := getUser(provider,r.URL.RawQuery)
+	//authCookie := objx.New(map[string]interface{}{
+	//	"name":user.Name(),
+	//}).MustBase64()
+	//cookie := &http.Cookie{Name: "auth", Value: authCookie,Path:"/"}
+
 	w.Header().Set("Location", loginUrl)
 	w.WriteHeader(http.StatusTemporaryRedirect)
+	//http.SetCookie(w,cookie)
 }
 
 /**
@@ -44,4 +53,16 @@ func getLoginURL(provider string) (string, error) {
 		return "", err
 	}
 	return loginUrl, nil
+}
+func getUser(provider string, url string) (common.User, error) {
+	gProvider, err := gomniauth.Provider(provider)
+	credentials, err := gProvider.CompleteAuth(objx.MustFromURLQuery(url))
+	if err != nil {
+		return nil, err
+	}
+	user, err := gProvider.GetUser(credentials)
+	if err != nil {
+		return nil, err
+	}
+	return user, nil
 }
