@@ -1,15 +1,19 @@
 package lib
 
-import "net/http"
+import (
+	"net/http"
+	"strings"
+	"fmt"
+)
 
 type authHandler struct {
 	next http.Handler
 }
-type Auth struct {
-	name string
-	value string
-}
+type loginProviderHandler struct{}
 
+func NewLoginProviderHandler() *loginProviderHandler {
+	return &loginProviderHandler{}
+}
 func (ah *authHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	_, err := r.Cookie("auth")
 	httpStatus := CheckCookie(w, r)
@@ -28,6 +32,16 @@ func CheckCookie(w http.ResponseWriter, r *http.Request) int {
 	}
 	return 0
 }
-func MustAuth(handler http.Handler) http.Handler{
-	return &authHandler{next:handler}
+func MustAuth(handler http.Handler) http.Handler {
+	return &authHandler{next: handler}
+}
+func (lh loginProviderHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
+	uri := strings.Split(r.URL.RequestURI(), "/")
+	action := uri[2]
+	provider := uri[3]
+	if action != "login" {
+		w.WriteHeader(http.StatusNotFound)
+		fmt.Fprintf(w, "Authentication action %s is not supported", action)
+	}
+	fmt.Fprintf(w, "Need to do authentication for %s", provider)
 }

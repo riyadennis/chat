@@ -76,3 +76,31 @@ func TestCheckHttpErrorWithWrongCookie(t *testing.T) {
 	assert.Equal(t, httpError, http.StatusTemporaryRedirect)
 	assert.Equal(t, rr.Header().Get("Location"), "/login")
 }
+func TestNewLoginProviderHandler(t *testing.T) {
+	lph := NewLoginProviderHandler()
+	assert.IsType(t, &loginProviderHandler{}, lph)
+}
+func TestLoginProviderHandlerServeHTTPWillGiveOKForValidLoginURL(t *testing.T) {
+	req, err := http.NewRequest("GET", "/auth/login/facebook", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	rr := httptest.NewRecorder()
+	lph := NewLoginProviderHandler()
+
+	handler := http.Handler(lph)
+	handler.ServeHTTP(rr, req)
+	assert.Equal(t, rr.Code, http.StatusOK)
+}
+func TestLoginProviderHandlerServeHTTPWillGiveErrorForInvalidValidLoginURL(t *testing.T) {
+	req, err := http.NewRequest("GET", "/auth/userlogin/facebook", nil)
+	if err != nil {
+		t.Fatal(err)
+	}
+	rr := httptest.NewRecorder()
+	lph := NewLoginProviderHandler()
+
+	handler := http.Handler(lph)
+	handler.ServeHTTP(rr, req)
+	assert.Equal(t, rr.Code, http.StatusNotFound)
+}
