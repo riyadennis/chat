@@ -19,7 +19,7 @@ func main() {
 	r := mux.NewRouter()
 	chatTemplateHandler := handlers.NewTemplateHandler("chat.html")
 	loginTemplateHandler := handlers.NewTemplateHandler("login.html")
-	loginProviderHandler := handlers.NewLoginProviderHandler()
+	loginProviderHandler := handlers.NewLoginHandler()
 
 	roomHandler := handlers.NewRoom()
 	r.Handle("/chat", handlers.MustAuth(chatTemplateHandler))

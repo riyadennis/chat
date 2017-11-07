@@ -1,22 +1,16 @@
 package handlers
 
 import (
-	"fmt"
 	"github.com/chat/config"
 	"github.com/stretchr/gomniauth"
 	"github.com/stretchr/gomniauth/providers/google"
 	"net/http"
-	"strings"
 )
 
 type authHandler struct {
 	next http.Handler
 }
-type loginProviderHandler struct{}
 
-func NewLoginProviderHandler() *loginProviderHandler {
-	return &loginProviderHandler{}
-}
 func (ah *authHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	_, err := r.Cookie("auth")
 	httpStatus := CheckCookie(w, r)
@@ -47,25 +41,4 @@ func SetupAuth(conf *config.Config) {
 			)
 		}
 	}
-}
-func (lh loginProviderHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	uri := strings.Split(r.URL.RequestURI(), "/")
-	action := uri[2]
-	provider := uri[3]
-	if action != "login" {
-		w.WriteHeader(http.StatusNotFound)
-		fmt.Fprintf(w, "Authentication action %s is not supported", action)
-	}
-	gprovider, err := gomniauth.Provider(provider)
-	if err != nil {
-		http.Error(w, fmt.Sprintf("Access the provider %s encountered error %s", provider, err.Error()), http.StatusInternalServerError)
-		return
-	}
-	loginUrl, err := gprovider.GetBeginAuthURL(nil, nil)
-	if err != nil {
-		http.Error(w, fmt.Sprintf("Error when trying to begin URL %s", loginUrl), http.StatusInternalServerError)
-		return
-	}
-	w.Header().Set("Location", loginUrl)
-	w.WriteHeader(http.StatusTemporaryRedirect)
 }
