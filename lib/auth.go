@@ -4,6 +4,7 @@ import (
 	"net/http"
 	"strings"
 	"fmt"
+	"github.com/stretchr/gomniauth"
 )
 
 type authHandler struct {
@@ -43,5 +44,16 @@ func (lh loginProviderHandler) ServeHTTP(w http.ResponseWriter, r *http.Request)
 		w.WriteHeader(http.StatusNotFound)
 		fmt.Fprintf(w, "Authentication action %s is not supported", action)
 	}
-	fmt.Fprintf(w, "Need to do authentication for %s", provider)
+	gprovider, err := gomniauth.Provider(provider)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Access the provider %s encountered error %s", provider, err.Error()), http.StatusInternalServerError)
+		return
+	}
+	loginUrl, err := gprovider.GetBeginAuthURL(nil, nil)
+	if err != nil {
+		http.Error(w, fmt.Sprintf("Error when trying to begin URL %s", loginUrl), http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Location", loginUrl)
+	w.WriteHeader(http.StatusTemporaryRedirect)
 }

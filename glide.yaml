@@ -9,3 +9,7 @@ import:
 - package: github.com/gorilla/mux
   version: ~1.6.0
 - package: github.com/stretchr/gomniauth
+- package: github.com/stretchr/codecs
+  subpackages:
+  - services
+- package: github.com/stretchr/signature
