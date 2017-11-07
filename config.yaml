@@ -1,0 +1,11 @@
+auth:
+  security: qBAbLFsUqEq85IEzlkebtqKde0Pybyw7ddzV8Gnk13JD3d1qMo1vBilrCV3j7B9k
+  providers:
+    - name: google
+      client: 620226514233-f2lssbjdrvfnmjh4svofs5qm51kpqtot.apps.googleusercontent.com
+      secret: qBiynOAr9qZsfhAJbXNnCWdp
+      url: http://localhost:8080/auth/callback/google
+    - name: facebook
+      client: 620226514233-f2lssbjdrvfnmjh4svofs5qm51kpqtot.apps.googleusercontent.com
+      secret: qBiynOAr9qZsfhAJbXNnCWdp
+      url: http://localhost:8080/auth/callback/google
