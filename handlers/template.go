@@ -6,6 +6,7 @@ import (
 	"net/http"
 	"path/filepath"
 	"sync"
+	"github.com/stretchr/objx"
 )
 
 type TemplateHandler struct {
@@ -18,6 +19,11 @@ func NewTemplateHandler(fileName string) *TemplateHandler {
 	return &TemplateHandler{
 		FileName: fileName,
 	}
+}
+
+type Data struct {
+	Host     string
+	UserData string
 }
 
 func (t *TemplateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
@@ -33,7 +39,15 @@ func (t *TemplateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		}
 	})
 	if t.Template != nil {
-		t.Template.Execute(w, r)
+		cookie, err := r.Cookie("auth")
+		if err != nil {
+			logrus.Error(err)
+		}
+		data := map[string]interface{}{
+			"Host": r.Host,
+		}
+		data["UserData"] = objx.MustFromBase64(cookie.Value)
+		t.Template.Execute(w, data)
 	}
 
 }
