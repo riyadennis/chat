@@ -19,13 +19,13 @@ func main() {
 	r := mux.NewRouter()
 	chatTemplateHandler := handlers.NewTemplateHandler("chat.html")
 	loginTemplateHandler := handlers.NewTemplateHandler("login.html")
-	loginProviderHandler := handlers.NewLoginHandler()
+	loginHandler := handlers.NewLoginHandler()
 
 	roomHandler := handlers.NewRoom()
 	r.Handle("/chat", handlers.MustAuth(chatTemplateHandler))
 	r.Handle("/login", loginTemplateHandler)
 	r.Handle("/room", roomHandler)
-	r.Handle("/auth/login/{provider}", loginProviderHandler)
+	r.Handle("/auth/{action}/{provider}/", loginHandler)
 
 	go roomHandler.BroadCastMessages()
 	var address = flag.String("address", ":8080", "Port to which web server will listen")

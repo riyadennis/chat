@@ -4,8 +4,8 @@ auth:
     - name: google
       client: 620226514233-f2lssbjdrvfnmjh4svofs5qm51kpqtot.apps.googleusercontent.com
       secret: qBiynOAr9qZsfhAJbXNnCWdp
-      url: http://localhost:8080/auth/callback/google
+      url: http://localhost:8080/auth/callback/google/
     - name: facebook
       client: 620226514233-f2lssbjdrvfnmjh4svofs5qm51kpqtot.apps.googleusercontent.com
       secret: qBiynOAr9qZsfhAJbXNnCWdp
-      url: http://localhost:8080/auth/callback/google
+      url: http://localhost:8080/auth/callback/google/

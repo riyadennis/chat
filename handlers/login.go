@@ -20,24 +20,33 @@ func (lh loginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	uri := strings.Split(r.URL.RequestURI(), "/")
 	action := uri[2]
 	provider := uri[3]
-	if action != "login" {
-		w.WriteHeader(http.StatusNotFound)
-		fmt.Fprintf(w, "Authentication action %s is not supported", action)
-	}
-	loginUrl, err := getLoginURL(provider)
-	if err != nil {
-		http.Error(w, err.Error(), http.StatusInternalServerError)
-		logrus.Error(err)
-	}
-	//user, err := getUser(provider,r.URL.RawQuery)
-	//authCookie := objx.New(map[string]interface{}{
-	//	"name":user.Name(),
-	//}).MustBase64()
-	//cookie := &http.Cookie{Name: "auth", Value: authCookie,Path:"/"}
+	switch action {
+	case "login":
+		loginUrl, err := getLoginURL(provider)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			logrus.Error(err)
+		}
+		w.Header().Set("Location", loginUrl)
+		w.WriteHeader(http.StatusTemporaryRedirect)
+	case "callback":
+		user, err := getUser(provider, r.URL.RawQuery)
+		if err != nil {
+			http.Error(w, err.Error(), http.StatusBadRequest)
+			logrus.Error(err)
+		}
+		if user !=nil {
+			cookie := createCookieFromUser(user)
+			http.SetCookie(w, cookie)
+			w.Header().Set("Location", "/chat")
+			w.WriteHeader(http.StatusTemporaryRedirect)
+		}
 
-	w.Header().Set("Location", loginUrl)
-	w.WriteHeader(http.StatusTemporaryRedirect)
-	//http.SetCookie(w,cookie)
+	default:
+		w.WriteHeader(http.StatusNotFound)
+		fmt.Fprintf(w, "Auth action %s not supported", action)
+	}
+
 }
 
 /**
@@ -65,4 +74,10 @@ func getUser(provider string, url string) (common.User, error) {
 		return nil, err
 	}
 	return user, nil
+}
+func createCookieFromUser(user common.User) (*http.Cookie) {
+	authCookie := objx.New(map[string]interface{}{
+		"name": user.Name(),
+	}).MustBase64()
+	return &http.Cookie{Name: "auth", Value: authCookie, Path: "/"}
 }
