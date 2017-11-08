@@ -53,11 +53,11 @@ func (lh loginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 Gets the login url from the provider
  */
 func getLoginURL(provider string) (string, error) {
-	gprovider, err := gomniauth.Provider(provider)
+	gProvider, err := gomniauth.Provider(provider)
 	if err != nil {
 		return "", err
 	}
-	loginUrl, err := gprovider.GetBeginAuthURL(nil, nil)
+	loginUrl, err := gProvider.GetBeginAuthURL(nil, nil)
 	if err != nil {
 		return "", err
 	}
