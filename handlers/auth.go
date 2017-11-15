@@ -5,6 +5,7 @@ import (
 	"github.com/stretchr/gomniauth"
 	"github.com/stretchr/gomniauth/providers/google"
 	"net/http"
+	"github.com/stretchr/gomniauth/providers/facebook"
 )
 
 type authHandler struct {
@@ -34,11 +35,18 @@ func MustAuth(handler http.Handler) http.Handler {
 }
 func SetupAuth(conf *config.Config) {
 	gomniauth.SetSecurityKey(conf.Auth.Security)
+	var googleProvider *google.GoogleProvider
+	var facebookProvider *facebook.FacebookProvider
 	for _, provider := range conf.Auth.Providers {
-		if provider.Name == "google" {
-			gomniauth.WithProviders(
-				google.New(provider.Client, provider.Secret, provider.Url),
-			)
+		switch provider.Name {
+		case "google":
+			googleProvider = google.New(provider.Client, provider.Secret, provider.Url)
+		case "facebook":
+			facebookProvider = facebook.New(provider.Client, provider.Secret, provider.Url)
 		}
+		gomniauth.WithProviders(
+			googleProvider,
+			facebookProvider,
+		)
 	}
 }
