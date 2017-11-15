@@ -6,7 +6,6 @@ import (
 	"github.com/sirupsen/logrus"
 	"net/http"
 	"github.com/chat/entities"
-	"os"
 	"time"
 	"github.com/stretchr/objx"
 )
@@ -41,14 +40,15 @@ func (r *Room) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		var jMsg entities.Message
 		_, message, err := socket.ReadMessage()
 		authCookie, err := req.Cookie("auth")
-		if err!=nil{
+		if err != nil {
 			r.tracer.Trace("Invalid Login")
 			logrus.Errorf("Invalid Login %s", err.Error())
 			break
 		}
-		jMsg.Name = objx.MustFromBase64(authCookie.Value)
-		jMsg.Message = string(message)
+		authName := objx.MustFromBase64(authCookie.Value)
+		jMsg.Name = authName["name"].(string)
 		jMsg.When = time.Now()
+		jMsg.Message = string(message)
 		if err != nil {
 			r.tracer.Trace("Unable to read message")
 			logrus.Errorf("Unable to read message: %s", err.Error())

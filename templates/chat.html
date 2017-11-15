@@ -33,16 +33,16 @@
                     alert("Error: no socket found");
                     return false;
                 }
-                exampleSocket.send($('#chatText').val())
+                mySocket.send($('#chatText').val())
                 $('#chatText').val("")
                 return false;
             });
-            var exampleSocket = new WebSocket("ws://{{.Host}}/room");
-            exampleSocket.onopen = function (event) {
-                exampleSocket.send("Some body new have joined!");
+            var mySocket = new WebSocket("ws://{{.Host}}/room");
+            mySocket.onopen = function (event) {
+                mySocket.send("Some body new have joined!");
             };
 
-            exampleSocket.onmessage = function (event) {
+            mySocket.onmessage = function (event) {
                 $("#messages").append("<li>"+event.data+"</li>")
             }
 

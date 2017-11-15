@@ -3,8 +3,8 @@ package entities
 import "time"
 
 type Message struct {
-	Name    map[string]interface{}
-	Message string
+	Name    string
+	Message string `json:Message`
 	When    time.Time
 }
 
