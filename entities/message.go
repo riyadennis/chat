@@ -4,10 +4,17 @@ import "time"
 
 type Message struct {
 	Name    string
-	Message string `json:Message`
+	Message string
 	When    time.Time
 }
 
-func (m *Message) GetMessage() string{
+func NewMessage(name, message string, when time.Time) *Message {
+	return &Message{
+		Name:    name,
+		Message: message,
+		When:    when,
+	}
+}
+func (m *Message) GetMessage() string {
 	return m.Message
 }

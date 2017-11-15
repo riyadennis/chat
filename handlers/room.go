@@ -37,33 +37,31 @@ func (r *Room) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	r.clients[socket] = true
 	r.tracer.Trace("Created a new client")
 	for {
-		var jMsg entities.Message
 		//@TODO need to implement readjson
 		_, message, err := socket.ReadMessage()
-		authCookie, err := req.Cookie("auth")
-		if err != nil {
-			r.tracer.Trace("Invalid Login")
-			logrus.Errorf("Invalid Login %s", err.Error())
-			break
-		}
-		authName := objx.MustFromBase64(authCookie.Value)
-		jMsg.Name = authName["name"].(string)
-		jMsg.When = time.Now()
-		jMsg.Message = string(message)
 		if err != nil {
 			r.tracer.Trace("Unable to read message")
 			logrus.Errorf("Unable to read message: %s", err.Error())
 			break
 		}
 
-		r.broadcast <- &jMsg
+		authCookie, err := req.Cookie("auth")
+		if err != nil {
+			r.tracer.Trace("Invalid Login")
+			logrus.Errorf("Invalid Login %s", err.Error())
+			break
+		}
+
+		authName := objx.MustFromBase64(authCookie.Value)
+		jMsg := entities.NewMessage(authName["name"].(string),string(message), time.Now())
+		r.broadcast <- jMsg
 	}
 }
 
 func (r *Room) BroadCastMessages() {
 	for {
 		message := <-r.broadcast
-		r.tracer.Trace("Message:", message.Message)
+		r.tracer.Trace("Message:", message.GetMessage())
 		for client := range r.clients {
 			err := client.WriteJSON(message)
 			if err != nil {
