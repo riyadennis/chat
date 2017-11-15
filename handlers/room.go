@@ -38,6 +38,7 @@ func (r *Room) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	r.tracer.Trace("Created a new client")
 	for {
 		var jMsg entities.Message
+		//@TODO need to implement readjson
 		_, message, err := socket.ReadMessage()
 		authCookie, err := req.Cookie("auth")
 		if err != nil {

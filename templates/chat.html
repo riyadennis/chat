@@ -43,7 +43,8 @@
             };
 
             mySocket.onmessage = function (event) {
-                $("#messages").append("<li>"+event.data+"</li>")
+                message = JSON.parse(event.data)
+                msg.append("<li><span><strong>"+message.Name+"</strong>:"+message.Message+"</span></li>")
             }
 
         });
