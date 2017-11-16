@@ -41,12 +41,14 @@ func (t *TemplateHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	if t.Template != nil {
 		cookie, err := r.Cookie("auth")
 		if err != nil {
-			logrus.Error(err)
+			logrus.Errorf("Cant find authentication cookie returned error %s", err)
 		}
 		data := map[string]interface{}{
 			"Host": r.Host,
 		}
-		data["UserData"] = objx.MustFromBase64(cookie.Value)
+		if cookie != nil {
+			data["UserData"] = objx.MustFromBase64(cookie.Value)
+		}
 		t.Template.Execute(w, data)
 	}
 
