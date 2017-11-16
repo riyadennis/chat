@@ -1,7 +1,7 @@
 #!/bin/bash -e
 
-run_server:
-	go run main.go --address=:8081
+run:
+	go run main.go --address=:8080
 deps:
 	glide install
 test:
