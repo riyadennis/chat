@@ -1,29 +1,30 @@
 package trace
 
 import (
-	"io"
 	"fmt"
+	"io"
 )
 
 type Tracer interface {
 	Trace(...interface{})
 }
-type nilTracer struct {}
+type nilTracer struct{}
 
 type trace struct {
 	out io.Writer
 }
-func (t trace) Trace(a ...interface{}){
+
+func (t trace) Trace(a ...interface{}) {
 	fmt.Fprintln(t.out, a...)
 }
-func (st nilTracer) Trace(a ...interface{}){}
+func (st nilTracer) Trace(a ...interface{}) {}
 
-func Off() Tracer{
+func Off() Tracer {
 	return &nilTracer{}
 }
 
 func New(w io.Writer) Tracer {
 	return trace{
-		out:w,
+		out: w,
 	}
 }

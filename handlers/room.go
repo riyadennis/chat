@@ -1,13 +1,13 @@
 package handlers
 
 import (
+	"github.com/chat/entities"
 	"github.com/chat/trace"
 	"github.com/gorilla/websocket"
 	"github.com/sirupsen/logrus"
-	"net/http"
-	"github.com/chat/entities"
-	"time"
 	"github.com/stretchr/objx"
+	"net/http"
+	"time"
 )
 
 type Room struct {
@@ -53,7 +53,7 @@ func (r *Room) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		}
 
 		authName := objx.MustFromBase64(authCookie.Value)
-		jMsg := entities.NewMessage(authName["name"].(string),string(message), time.Now())
+		jMsg := entities.NewMessage(authName["name"].(string), string(message), time.Now())
 		r.broadcast <- jMsg
 	}
 }

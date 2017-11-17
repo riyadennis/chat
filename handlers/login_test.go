@@ -1,10 +1,10 @@
 package handlers
 
 import (
-	"testing"
 	"github.com/stretchr/testify/assert"
-	"net/http/httptest"
 	"net/http"
+	"net/http/httptest"
+	"testing"
 )
 
 func TestNewLoginProviderHandler(t *testing.T) {
@@ -34,4 +34,3 @@ func TestLoginHandlerServeHTTPWillGiveErrorForInvalidValidLoginURL(t *testing.T)
 	handler.ServeHTTP(rr, req)
 	assert.Equal(t, rr.Code, http.StatusTemporaryRedirect)
 }
-

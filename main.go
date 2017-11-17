@@ -19,7 +19,9 @@ func main() {
 	var address = flag.String("address", ":8080", "Port to which web server will listen")
 	flag.Parse()
 	router := handlers.NewRouter(r, *address)
+
 	conf := config.ParseConfig("config.yaml")
 	handlers.SetupAuth(conf)
+
 	router.Run()
 }

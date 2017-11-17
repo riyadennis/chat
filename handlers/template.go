@@ -2,11 +2,11 @@ package handlers
 
 import (
 	"github.com/sirupsen/logrus"
+	"github.com/stretchr/objx"
 	"html/template"
 	"net/http"
 	"path/filepath"
 	"sync"
-	"github.com/stretchr/objx"
 )
 
 type TemplateHandler struct {

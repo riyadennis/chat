@@ -2,13 +2,14 @@ package handlers
 
 import (
 	"fmt"
-	"github.com/stretchr/gomniauth"
-	"strings"
-	"net/http"
 	"github.com/sirupsen/logrus"
-	"github.com/stretchr/objx"
+	"github.com/stretchr/gomniauth"
 	"github.com/stretchr/gomniauth/common"
+	"github.com/stretchr/objx"
+	"net/http"
+	"strings"
 )
+
 //TODO need to add login github account
 type loginHandler struct{}
 
@@ -35,7 +36,7 @@ func (lh loginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			logrus.Error(err)
 		}
-		if user !=nil {
+		if user != nil {
 			cookie := createCookieFromUser(user)
 			http.SetCookie(w, cookie)
 			w.Header().Set("Location", "/chat")
@@ -51,7 +52,7 @@ func (lh loginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 /**
 Gets the login url from the provider
- */
+*/
 func getLoginURL(provider string) (string, error) {
 	gProvider, err := gomniauth.Provider(provider)
 	if err != nil {
@@ -75,7 +76,7 @@ func getUser(provider string, url string) (common.User, error) {
 	}
 	return user, nil
 }
-func createCookieFromUser(user common.User) (*http.Cookie) {
+func createCookieFromUser(user common.User) *http.Cookie {
 	authCookie := objx.New(map[string]interface{}{
 		"name": user.Name(),
 	}).MustBase64()

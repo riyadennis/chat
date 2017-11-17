@@ -2,8 +2,8 @@ package handlers
 
 import (
 	"github.com/gorilla/mux"
-	"net/http"
 	"github.com/sirupsen/logrus"
+	"net/http"
 )
 
 type Router struct {
@@ -11,7 +11,7 @@ type Router struct {
 	Address string
 }
 
-func NewRouter(router *mux.Router, address string) (*Router) {
+func NewRouter(router *mux.Router, address string) *Router {
 	return &Router{
 		Router:  router,
 		Address: address,

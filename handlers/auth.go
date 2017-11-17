@@ -3,9 +3,9 @@ package handlers
 import (
 	"github.com/chat/config"
 	"github.com/stretchr/gomniauth"
+	"github.com/stretchr/gomniauth/providers/facebook"
 	"github.com/stretchr/gomniauth/providers/google"
 	"net/http"
-	"github.com/stretchr/gomniauth/providers/facebook"
 )
 
 type authHandler struct {
