@@ -38,5 +38,5 @@ func TestRoomServeHTTPWithWebSocketRequest(t *testing.T) {
 	connection.WriteMessage(websocket.TextMessage, []byte(message))
 	messageFromChannel := <-roomHandler.broadcast
 	//assert that we have message recieved
-	assert.Equal(t, message, string(messageFromChannel))
+	assert.Equal(t, message, string(messageFromChannel.Message))
 }
