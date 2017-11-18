@@ -52,8 +52,9 @@ func (r *Room) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 			break
 		}
 
-		authName := objx.MustFromBase64(authCookie.Value)
-		jMsg := entities.NewMessage(authName["name"].(string), string(message), time.Now())
+		authCookieData := objx.MustFromBase64(authCookie.Value)
+		avatarUrl := authCookieData["avatar_url"]
+		jMsg := entities.NewMessage(authCookieData["name"].(string), string(message), avatarUrl.(string),time.Now())
 		r.broadcast <- jMsg
 	}
 }

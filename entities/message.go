@@ -6,13 +6,15 @@ type Message struct {
 	Name    string
 	Message string
 	When    time.Time
+	AvatarUrl string
 }
 
-func NewMessage(name, message string, when time.Time) *Message {
+func NewMessage(name, message,avatarUrl string, when time.Time) *Message {
 	return &Message{
 		Name:    name,
 		Message: message,
 		When:    when,
+		AvatarUrl:avatarUrl,
 	}
 }
 func (m *Message) GetMessage() string {
