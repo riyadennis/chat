@@ -77,7 +77,6 @@ func getUser(provider string, url string) (common.User, error) {
 	return user, nil
 }
 func createCookieFromUser(user common.User) *http.Cookie {
-	
 	authCookie := objx.New(map[string]interface{}{
 		"name": user.Name(),
 		"avatar_url": user.AvatarURL(),

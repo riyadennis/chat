@@ -1,12 +1,16 @@
 package handlers
 
 import (
-	"fmt"
+	//"fmt"
 	"github.com/gorilla/websocket"
 	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	//"net/url"
+	"fmt"
+	"net/url"
+	"net/http/cookiejar"
 )
 
 func TestNewRoom(t *testing.T) {
@@ -24,19 +28,24 @@ func TestRoomServeHTTPWithHTTPRequest(t *testing.T) {
 	assert.Equal(t, rr.Code, http.StatusBadRequest)
 }
 func TestRoomServeHTTPWithWebSocketRequest(t *testing.T) {
+	var cookies []*http.Cookie
 	roomHandler := NewRoom()
 	server := httptest.NewServer(roomHandler)
 	dialer := websocket.Dialer{}
-	message := "This is a test message"
-	url := fmt.Sprintf("ws://%s/room", server.Listener.Addr().String())
-	connection, response, error := dialer.Dial(url, nil)
+	urlString := fmt.Sprintf("ws://%s/room", server.Listener.Addr().String())
+
+	cookieJar, _ := cookiejar.New(nil)
+	cookie := http.Cookie{Name: "auth", Value: "test"}
+	cookies = append(cookies, &cookie)
+	urlParsed, _ := url.Parse(urlString)
+
+	cookieJar.SetCookies(urlParsed, cookies)
+	dialer.Jar = cookieJar
+
+	_, response, error := dialer.Dial(urlString, nil)
 	if error != nil {
-		t.Fatal(error)
+		t.Fatalf("Error encountered %s", error)
 	}
 	//assert that we established a full duplex connection
 	assert.Equal(t, response.Status, "101 Switching Protocols")
-	connection.WriteMessage(websocket.TextMessage, []byte(message))
-	messageFromChannel := <-roomHandler.broadcast
-	//assert that we have message recieved
-	assert.Equal(t, message, string(messageFromChannel.Message))
 }
