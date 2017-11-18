@@ -18,7 +18,7 @@ func NewRouter(router *mux.Router, address string) *Router {
 	}
 }
 func (r *Router) Run() {
-	roomHandler := NewRoom()
+	roomHandler := NewRoom(false)
 	chatTemplateHandler := NewTemplateHandler("chat.html")
 	loginTemplateHandler := NewTemplateHandler("login.html")
 	loginHandler := NewLoginHandler()

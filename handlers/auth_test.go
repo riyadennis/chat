@@ -18,7 +18,7 @@ func TestMustAuth(t *testing.T) {
 		t.Fatal(err)
 	}
 	rr := httptest.NewRecorder()
-	roomHandler := NewRoom()
+	roomHandler := NewRoom(false)
 	ah := authHandler{next: roomHandler}
 	handler := MustAuth(http.Handler(&ah))
 	handler.ServeHTTP(rr, req)
