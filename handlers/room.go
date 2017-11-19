@@ -35,7 +35,7 @@ func NewRoom(tracerStatus bool) *Room {
 }
 
 func (r *Room) ServeHTTP(w http.ResponseWriter, req *http.Request) {
-	socket, err := r.CreateClient(w, req)
+	socket, err := r.createClient(w, req)
 	if socket != nil && err == nil {
 		for {
 			//@TODO need to implement readjson
@@ -60,7 +60,7 @@ func (r *Room) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 		}
 	}
 }
-func (r *Room) CreateClient(w http.ResponseWriter, req *http.Request) (*websocket.Conn, error) {
+func (r *Room) createClient(w http.ResponseWriter, req *http.Request) (*websocket.Conn, error) {
 	if &r.upgrader != nil {
 		socket, err := r.upgrader.Upgrade(w, req, nil)
 		if err != nil {

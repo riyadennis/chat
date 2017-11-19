@@ -42,9 +42,19 @@ func TestRoomCreateClient(t *testing.T) {
 	}
 	rw := httptest.NewRecorder()
 	roomHandler := NewRoom(false)
-	_, err = roomHandler.CreateClient(rw, req)
+	_, err = roomHandler.createClient(rw, req)
 	assert.Error(t, err)
 	assert.Equal(t, len(roomHandler.clients), 0)
+}
+func TestRoomCreateClientWithWebSocket(t *testing.T) {
+	roomHandler := NewRoom(true)
+	server := httptest.NewServer(roomHandler)
+	dialer := websocket.Dialer{}
+	urlString := fmt.Sprintf("ws://%s/room", server.Listener.Addr().String())
+	_, _ , error := dialer.Dial(urlString, nil)
+	assert.NoError(t, error)
+	assert.Equal(t, len(roomHandler.clients), 1)
+	fmt.Println(len(roomHandler.clients))
 }
 func TestRoomServeHTTPWithWebSocketRequest(t *testing.T) {
 	var cookies []*http.Cookie
@@ -67,6 +77,7 @@ func TestRoomServeHTTPWithWebSocketRequest(t *testing.T) {
 	}
 	//assert that we established a full duplex connection
 	assert.Equal(t, response.Status, "101 Switching Protocols")
+	assert.Equal(t, len(roomHandler.clients), 1)
 }
 //func TestRoomServeHTTPWithWebSocketRequestWithInvalidCookie(t *testing.T) {
 //	var cookies []*http.Cookie
@@ -83,17 +94,14 @@ func TestRoomServeHTTPWithWebSocketRequest(t *testing.T) {
 //	cookieJar.SetCookies(urlParsed, cookies)
 //	dialer.Jar = cookieJar
 //
-//	_, _, error := dialer.Dial(urlString, nil)
+//	connection, _, error := dialer.Dial(urlString, nil)
 //	if error != nil {
 //		t.Fatalf("Error encountered %s", error)
 //	}
-//	//connection.WriteMessage(websocket.TextMessage, []byte("my message"))
-//	//msg :=  <-roomHandler.broadcast
-//	//fmt.Println(msg)
-//	//close(roomHandler.broadcast)
-//	//close(roomHandler.broadcast)
-//	//connection.Close()
-//	//messageFromChannel := <-roomHandler.broadcast
-//	//fmt.Println(messageFromChannel)
-//	assert.Equal(t, len(roomHandler.clients), 1)
+//	connection.WriteMessage(websocket.TextMessage, []byte("my message"))
+//	connection.Close()
+//	messageFromChannel := <-roomHandler.broadcast
+//	close(roomHandler.broadcast)
+//	fmt.Println(messageFromChannel)
+//	assert.Error(t, error)
 //}
