@@ -7,6 +7,7 @@ import (
 	"github.com/gorilla/mux"
 	"net/http"
 	"path/filepath"
+	"github.com/sirupsen/logrus"
 )
 
 func main() {
@@ -20,7 +21,10 @@ func main() {
 	flag.Parse()
 	router := handlers.NewRouter(r, *address)
 
-	conf := config.ParseConfig("config.yaml")
+	conf, err := config.ParseConfig("config.yaml")
+	if err!=nil{
+		logrus.Errorf("Invalid config %s", err.Error())
+	}
 	handlers.SetupAuth(conf)
 
 	router.Run()

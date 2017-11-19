@@ -3,8 +3,6 @@ package handlers
 import (
 	"github.com/chat/config"
 	"github.com/stretchr/gomniauth"
-	"github.com/stretchr/gomniauth/providers/facebook"
-	"github.com/stretchr/gomniauth/providers/google"
 	"net/http"
 )
 
@@ -35,18 +33,10 @@ func MustAuth(handler http.Handler) http.Handler {
 }
 func SetupAuth(conf *config.Config) {
 	gomniauth.SetSecurityKey(conf.Auth.Security)
-	var googleProvider *google.GoogleProvider
-	var facebookProvider *facebook.FacebookProvider
 	for _, provider := range conf.Auth.Providers {
-		switch provider.Name {
-		case "google":
-			googleProvider = google.New(provider.Client, provider.Secret, provider.Url)
-		case "facebook":
-			facebookProvider = facebook.New(provider.Client, provider.Secret, provider.Url)
-		}
 		gomniauth.WithProviders(
-			googleProvider,
-			facebookProvider,
+			provider.GetGoogleProvider(),
+			provider.GetFaceBookProvider(),
 		)
 	}
 }

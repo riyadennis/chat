@@ -1,0 +1,11 @@
+auth:
+  security: ChangeMe
+  providers:
+    - name: google
+      client: TestCLientId
+      secret: ChangeMe
+      url: http://localhost:8080/auth/callback/google/
+    - name: facebook
+      client: TestCLientId
+      secret: ChangeMe
+      url: http://localhost:8080/auth/callback/facebook/

@@ -4,42 +4,49 @@ import (
 	"os"
 	"io/ioutil"
 	"gopkg.in/yaml.v2"
-	"github.com/sirupsen/logrus"
 	"github.com/stretchr/gomniauth/providers/google"
+	"github.com/stretchr/gomniauth/providers/facebook"
 )
 
 type Config struct {
 	Auth Auth
 }
 type Auth struct {
-	Security string
+	Security  string
 	Providers []Provider
 }
 type Provider struct {
-	Name string
+	Name   string
 	Client string
 	Secret string
-	Url string
+	Url    string
 }
-func (p Provider) NewProvider(){
-	if p.Name == "google"{
-		google.New(p.Client, p.Secret, p.Url)
+
+func (p Provider) GetGoogleProvider() (*google.GoogleProvider) {
+	if p.Name == "google" {
+		return google.New(p.Client, p.Secret, p.Url)
 	}
+	return nil
 }
-func ParseConfig(pathToFile string) *Config {
+func (p Provider) GetFaceBookProvider() (*facebook.FacebookProvider) {
+	if p.Name == "facebook" {
+		return facebook.New(p.Client, p.Secret, p.Url)
+	}
+	return nil
+}
+func ParseConfig(pathToFile string) (*Config, error) {
 	cFile, err := os.Open(pathToFile)
 	if err != nil {
-		logrus.Fatal("unable to open the file")
+		return nil, err
 	}
 	configCon, err := ioutil.ReadAll(cFile)
 	if err != nil {
-		logrus.Fatal("Unable to read the config file")
+		return nil, err
 	}
 	config := &Config{}
 	err = yaml.Unmarshal(configCon, config)
 	if err != nil {
-		logrus.Fatalf("Invalid YAML file %s", err.Error())
+		return nil, err
 	}
-	return config
+	return config, nil
 }
-
