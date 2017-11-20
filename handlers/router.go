@@ -17,15 +17,17 @@ func NewRouter(router *mux.Router, address string) *Router {
 		Address: address,
 	}
 }
-func (r *Router) Run() {
-	roomHandler := NewRoom(false)
+func (r *Router) Run(tracerStatus *bool) {
+	roomHandler := NewRoom(tracerStatus)
 	chatTemplateHandler := NewTemplateHandler("chat.html")
 	loginTemplateHandler := NewTemplateHandler("login.html")
 	loginHandler := NewLoginHandler()
+	logoutHandler := &Logout{}
 
 	r.Router.Handle("/chat", MustAuth(chatTemplateHandler))
 	r.Router.Handle("/room", roomHandler)
 	r.Router.Handle("/login", loginTemplateHandler)
+	r.Router.Handle("/logout", logoutHandler)
 	r.Router.Handle("/auth/{action}/{provider}/", loginHandler)
 
 	go roomHandler.BroadCastMessages()

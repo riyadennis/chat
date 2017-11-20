@@ -8,7 +8,9 @@ import (
 	"net/http"
 	"path/filepath"
 	"github.com/sirupsen/logrus"
+	"context"
 )
+var ctx context.Context
 
 func main() {
 	rootPath, _ := filepath.Abs("templates")
@@ -18,7 +20,6 @@ func main() {
 
 	r := mux.NewRouter()
 	var address = flag.String("address", ":8080", "Port to which web server will listen")
-	flag.Parse()
 	router := handlers.NewRouter(r, *address)
 
 	conf, err := config.ParseConfig("config.yaml")
@@ -27,5 +28,7 @@ func main() {
 	}
 	handlers.SetupAuth(conf)
 
-	router.Run()
+	var trace = flag.Bool("traceStatus", false, "Error handling and tracing")
+	flag.Parse()
+	router.Run(trace)
 }

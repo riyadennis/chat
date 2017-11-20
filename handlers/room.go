@@ -19,9 +19,9 @@ type Room struct {
 	tracer    trace.Tracer
 }
 
-func NewRoom(tracerStatus bool) *Room {
+func NewRoom(tracerStatus *bool) *Room {
 	var tracer trace.Tracer
-	if tracerStatus == true {
+	if *tracerStatus == true {
 		tracer = trace.New(os.Stdout)
 	} else {
 		tracer = trace.Off()
