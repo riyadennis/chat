@@ -4,24 +4,27 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
 	"net/http"
+	"github.com/chat/config"
 )
 
 type Router struct {
 	Router  *mux.Router
 	Address string
+	Config *config.Config
 }
 
-func NewRouter(router *mux.Router, address string) *Router {
+func NewRouter(router *mux.Router, address string, config *config.Config) *Router {
 	return &Router{
 		Router:  router,
 		Address: address,
+		Config:config,
 	}
 }
 func (r *Router) Run(tracerStatus *bool) {
 	roomHandler := NewRoom(tracerStatus)
 	chatTemplateHandler := NewTemplateHandler("chat.html")
 	loginTemplateHandler := NewTemplateHandler("login.html")
-	loginHandler := NewLoginHandler()
+	loginHandler := NewLoginHandler(r.Config)
 	logoutHandler := &Logout{}
 
 	r.Router.Handle("/chat", MustAuth(chatTemplateHandler))

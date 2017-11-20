@@ -18,14 +18,16 @@ func main() {
 	fs := http.FileServer(http.Dir(rootPath))
 	http.Handle("/templates", fs)
 
-	r := mux.NewRouter()
-	var address = flag.String("address", ":8080", "Port to which web server will listen")
-	router := handlers.NewRouter(r, *address)
-
 	conf, err := config.ParseConfig("config.yaml")
 	if err!=nil{
 		logrus.Errorf("Invalid config %s", err.Error())
 	}
+
+	r := mux.NewRouter()
+	var address = flag.String("address", ":8080", "Port to which web server will listen")
+	router := handlers.NewRouter(r, *address, conf)
+
+
 	handlers.SetupAuth(conf)
 
 	var trace = flag.Bool("traceStatus", false, "Error handling and tracing")
