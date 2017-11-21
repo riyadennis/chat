@@ -58,7 +58,7 @@ func (r *Room) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 				m = avatarUrl.(string)
 			}
 
-			jMsg := entities.NewMessage(authCookieData["name"].(string), m, string(message), time.Now())
+			jMsg := entities.NewMessage(authCookieData["name"].(string),string(message),m, time.Now())
 			r.broadcast <- jMsg
 		}
 	}

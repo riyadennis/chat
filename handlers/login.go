@@ -14,13 +14,13 @@ import (
 )
 
 //TODO need to add login github account
-type loginHandler struct{
+type loginHandler struct {
 	Config *config.Config
 }
 
 func NewLoginHandler(config *config.Config) *loginHandler {
 	return &loginHandler{
-		Config:config,
+		Config: config,
 	}
 }
 
@@ -63,7 +63,7 @@ Gets the login url from the provider
 func getLoginURL(provider string, config *config.Config) (string, error) {
 	loginUrl := ""
 	for _, providerConf := range config.Auth.Providers {
-		if provider == "google"{
+		if provider == "google" && providerConf.Name == "google" {
 			gp := google.New(providerConf.Client, providerConf.Secret, providerConf.Url)
 			loginUrl, err := gp.GetBeginAuthURL(nil, nil)
 			if err != nil {
@@ -71,7 +71,7 @@ func getLoginURL(provider string, config *config.Config) (string, error) {
 			}
 			return loginUrl, nil
 		}
-		if provider == "facebook"{
+		if provider == "facebook" && providerConf.Name == "facebook" {
 			fp := facebook.New(providerConf.Client, providerConf.Secret, providerConf.Url)
 			loginUrl, err := fp.GetBeginAuthURL(nil, nil)
 			if err != nil {
@@ -85,7 +85,7 @@ func getLoginURL(provider string, config *config.Config) (string, error) {
 }
 func getUser(provider string, url string, config *config.Config) (common.User, error) {
 	for _, providerConf := range config.Auth.Providers {
-		if provider == "google"{
+		if provider == "google" && providerConf.Name == "google" {
 			gp := google.New(providerConf.Client, providerConf.Secret, providerConf.Url)
 			credentials, err := gp.CompleteAuth(objx.MustFromURLQuery(url))
 			user, err := gp.GetUser(credentials)
@@ -94,7 +94,7 @@ func getUser(provider string, url string, config *config.Config) (common.User, e
 			}
 			return user, nil
 		}
-		if provider == "facebook"{
+		if provider == "facebook" && providerConf.Name == "facebook" {
 			fp := facebook.New(providerConf.Client, providerConf.Secret, providerConf.Url)
 			credentials, err := fp.CompleteAuth(objx.MustFromURLQuery(url))
 			user, err := fp.GetUser(credentials)
@@ -108,7 +108,7 @@ func getUser(provider string, url string, config *config.Config) (common.User, e
 }
 func createCookieFromUser(user common.User) *http.Cookie {
 	authCookie := objx.New(map[string]interface{}{
-		"name": user.Name(),
+		"name":       user.Name(),
 		"avatar_url": user.AvatarURL(),
 	}).MustBase64()
 	return &http.Cookie{Name: "auth", Value: authCookie, Path: "/"}
