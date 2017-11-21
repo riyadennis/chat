@@ -45,8 +45,7 @@
             mySocket.onmessage = function (event) {
                 message = JSON.parse(event.data)
                 msg.append("<li><img src=" + message.AvatarUrl +
-                        "height=42 width=42><span><strong>" +
-                        message.Name + "</strong>:" + message.Message + "</span></li>")
+                        "height=42 width=42><span>" + message.Message + "</span></li>")
             }
 
         });
@@ -55,7 +54,7 @@
 <body>
 <ul id="messages"></ul>
 <form id="chatbox">
-    <div>{{.UserData.name}}</div>
+    <div>Send Message as {{.UserData.name}} OR <a href="/logout">Sign Out</a></div>
     <textarea id="chatText"></textarea>
     <input type="submit" value="send"/>
 </form>
