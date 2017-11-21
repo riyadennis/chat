@@ -52,10 +52,13 @@ func (r *Room) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 				logrus.Errorf("Invalid Login %s", err.Error())
 				break
 			}
-
+			var m string
 			authCookieData := objx.MustFromBase64(authCookie.Value)
-			avatarUrl := authCookieData["avatar_url"]
-			jMsg := entities.NewMessage(authCookieData["name"].(string), string(message), avatarUrl.(string), time.Now())
+			if avatarUrl, ok := authCookieData["avatar_url"]; ok {
+				m = avatarUrl.(string)
+			}
+
+			jMsg := entities.NewMessage(authCookieData["name"].(string), m, string(message), time.Now())
 			r.broadcast <- jMsg
 		}
 	}
@@ -71,7 +74,7 @@ func (r *Room) createClient(w http.ResponseWriter, req *http.Request) (*websocke
 
 		r.clients[socket] = true
 		r.tracer.Trace("Created a new client")
-		return socket,nil
+		return socket, nil
 	}
 	return nil, errors.New("invalid request")
 }
