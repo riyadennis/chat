@@ -1,15 +1,16 @@
 package handlers
 
 import (
+	"errors"
+	"net/http"
+	"os"
+	"time"
+
 	"github.com/chat/entities"
 	"github.com/chat/trace"
 	"github.com/gorilla/websocket"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/objx"
-	"net/http"
-	"time"
-	"os"
-	"errors"
 )
 
 type Room struct {
@@ -19,9 +20,9 @@ type Room struct {
 	tracer    trace.Tracer
 }
 
-func NewRoom(tracerStatus *bool) *Room {
+func NewRoom(tracerStatus bool) *Room {
 	var tracer trace.Tracer
-	if *tracerStatus == true {
+	if tracerStatus == true {
 		tracer = trace.New(os.Stdout)
 	} else {
 		tracer = trace.Off()
@@ -58,7 +59,7 @@ func (r *Room) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 				m = avatarUrl.(string)
 			}
 
-			jMsg := entities.NewMessage(authCookieData["name"].(string),string(message),m, time.Now())
+			jMsg := entities.NewMessage(authCookieData["name"].(string), string(message), m, time.Now())
 			r.broadcast <- jMsg
 		}
 	}

@@ -1,15 +1,17 @@
 package main
 
 import (
+	"context"
 	"flag"
+	"net/http"
+	"path/filepath"
+
 	"github.com/chat/config"
 	"github.com/chat/handlers"
 	"github.com/gorilla/mux"
-	"net/http"
-	"path/filepath"
 	"github.com/sirupsen/logrus"
-	"context"
 )
+
 var ctx context.Context
 
 func main() {
@@ -19,7 +21,7 @@ func main() {
 	http.Handle("/templates", fs)
 
 	conf, err := config.ParseConfig("config.yaml")
-	if err!=nil{
+	if err != nil {
 		logrus.Errorf("Invalid config %s", err.Error())
 	}
 
@@ -29,7 +31,8 @@ func main() {
 
 	handlers.SetupAuth(conf)
 
-	var trace = flag.Bool("traceStatus", false, "Error handling and tracing")
+	trace := flag.Bool("traceStatus", false, "Error handling and tracing")
 	flag.Parse()
-	router.Run(trace)
+
+	router.Run(*trace)
 }

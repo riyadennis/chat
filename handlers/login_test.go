@@ -1,14 +1,17 @@
 package handlers
 
 import (
-	"github.com/stretchr/testify/assert"
 	"net/http"
 	"net/http/httptest"
 	"testing"
+
+	"github.com/chat/config"
+	"github.com/stretchr/testify/assert"
 )
 
 func TestNewLoginProviderHandler(t *testing.T) {
-	lph := NewLoginHandler()
+	config := &config.Config{}
+	lph := NewLoginHandler(config)
 	assert.IsType(t, &loginHandler{}, lph)
 }
 func TestLoginHandlerServeHTTPWillGiveOKForValidLoginURL(t *testing.T) {
@@ -17,7 +20,8 @@ func TestLoginHandlerServeHTTPWillGiveOKForValidLoginURL(t *testing.T) {
 		t.Fatal(err)
 	}
 	rr := httptest.NewRecorder()
-	lh := NewLoginHandler()
+	config := &config.Config{}
+	lh := NewLoginHandler(config)
 	handler := MustAuth(http.Handler(lh))
 	handler.ServeHTTP(rr, req)
 	assert.Equal(t, rr.Code, http.StatusTemporaryRedirect)
@@ -28,7 +32,9 @@ func TestLoginHandlerServeHTTPWillGiveErrorForInvalidValidLoginURL(t *testing.T)
 		t.Fatal(err)
 	}
 	rr := httptest.NewRecorder()
-	lph := NewLoginHandler()
+
+	config := &config.Config{}
+	lph := NewLoginHandler(config)
 
 	handler := MustAuth(http.Handler(lph))
 	handler.ServeHTTP(rr, req)

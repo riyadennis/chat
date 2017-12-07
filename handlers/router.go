@@ -1,26 +1,28 @@
 package handlers
 
 import (
+	"net/http"
+
+	"github.com/chat/config"
 	"github.com/gorilla/mux"
 	"github.com/sirupsen/logrus"
-	"net/http"
-	"github.com/chat/config"
 )
 
 type Router struct {
 	Router  *mux.Router
 	Address string
-	Config *config.Config
+	Config  *config.Config
 }
 
 func NewRouter(router *mux.Router, address string, config *config.Config) *Router {
 	return &Router{
 		Router:  router,
 		Address: address,
-		Config:config,
+		Config:  config,
 	}
 }
-func (r *Router) Run(tracerStatus *bool) {
+
+func (r *Router) Run(tracerStatus bool) {
 	roomHandler := NewRoom(tracerStatus)
 	chatTemplateHandler := NewTemplateHandler("chat.html")
 	loginTemplateHandler := NewTemplateHandler("login.html")

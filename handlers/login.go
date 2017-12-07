@@ -2,15 +2,16 @@ package handlers
 
 import (
 	"fmt"
-	"github.com/sirupsen/logrus"
-	"github.com/stretchr/gomniauth/common"
-	"github.com/stretchr/objx"
 	"net/http"
 	"strings"
-	"github.com/stretchr/gomniauth/providers/google"
+
 	"github.com/chat/config"
-	"github.com/stretchr/gomniauth/providers/facebook"
 	"github.com/pkg/errors"
+	"github.com/sirupsen/logrus"
+	"github.com/stretchr/gomniauth/common"
+	"github.com/stretchr/gomniauth/providers/facebook"
+	"github.com/stretchr/gomniauth/providers/google"
+	"github.com/stretchr/objx"
 )
 
 //TODO need to add login github account
