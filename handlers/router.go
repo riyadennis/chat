@@ -26,13 +26,17 @@ func (r *Router) Run(tracerStatus bool) {
 	roomHandler := NewRoom(tracerStatus)
 	chatTemplateHandler := NewTemplateHandler("chat.html")
 	loginTemplateHandler := NewTemplateHandler("login.html")
+	uploadTemplateHandler := NewTemplateHandler("upload.html")
 	loginHandler := NewLoginHandler(r.Config)
 	logoutHandler := &Logout{}
+	uploadHandler := &uploadHandler{}
 
 	r.Router.Handle("/chat", MustAuth(chatTemplateHandler))
 	r.Router.Handle("/room", roomHandler)
 	r.Router.Handle("/login", loginTemplateHandler)
+	r.Router.Handle("/upload", uploadTemplateHandler)
 	r.Router.Handle("/logout", logoutHandler)
+	r.Router.Handle("/uploader", uploadHandler)
 	r.Router.Handle("/auth/{action}/{provider}/", loginHandler)
 
 	go roomHandler.BroadCastMessages()
