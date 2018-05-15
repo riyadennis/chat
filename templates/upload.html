@@ -9,10 +9,10 @@
                 <h1>Upload Picture</h1>
             </div>
             <form role="form" action="/uploader" enctype="multipart/form-data" method="post">
-                <input type="hidden" name="userid" value="{{.UserData.userid}}"/>
+                <input type="hidden" name="user_id" value="{{.UserData.user_id}}"/>
                 <div class="form-group">
                     <label for="avatarfile">Select File</label>
-                    <input type="file" name="avatarfile" id="avatarfile"/>
+                    <input type="file" name="avatar_file" id="avatar_file"/>
                     <input type="submit" value="Upload" class="btn"/>
                 </div>
             </form>
