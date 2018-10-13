@@ -1,18 +1,18 @@
 package config
 
 import (
-	"testing"
-	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/gomniauth/providers/facebook"
 	"github.com/stretchr/gomniauth/providers/google"
+	"github.com/stretchr/testify/assert"
+	"testing"
 )
 
 func TestProviderGetFaceBookProvider(t *testing.T) {
 	provider := Provider{
-		Name: "facebook",
-		Client:"TESTCLIENT",
-		Secret:"THISISASCERET",
-		Url:"http://localhost:8080/auth/callback/facebook/",
+		Name:   "facebook",
+		Client: "TESTCLIENT",
+		Secret: "THISISASCERET",
+		URL:    "http://localhost:8080/auth/callback/facebook/",
 	}
 	facebookProvider := provider.GetFaceBookProvider()
 	assert.IsType(t, facebookProvider, &facebook.FacebookProvider{})
@@ -20,10 +20,10 @@ func TestProviderGetFaceBookProvider(t *testing.T) {
 }
 func TestProviderGetGoogleProvider(t *testing.T) {
 	provider := Provider{
-		Name: "google",
-		Client:"TESTCLIENT",
-		Secret:"THISISASCERET",
-		Url:"http://localhost:8080/auth/callback/google/",
+		Name:   "google",
+		Client: "TESTCLIENT",
+		Secret: "THISISASCERET",
+		URL:    "http://localhost:8080/auth/callback/google/",
 	}
 	googleProvider := provider.GetGoogleProvider()
 	assert.IsType(t, googleProvider, &google.GoogleProvider{})

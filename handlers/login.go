@@ -65,7 +65,7 @@ func getLoginURL(provider string, config *config.Config) (string, error) {
 	loginUrl := ""
 	for _, providerConf := range config.Auth.Providers {
 		if provider == "google" && providerConf.Name == "google" {
-			gp := google.New(providerConf.Client, providerConf.Secret, providerConf.Url)
+			gp := google.New(providerConf.Client, providerConf.Secret, providerConf.URL)
 			loginUrl, err := gp.GetBeginAuthURL(nil, nil)
 			if err != nil {
 				return "", err
@@ -73,7 +73,7 @@ func getLoginURL(provider string, config *config.Config) (string, error) {
 			return loginUrl, nil
 		}
 		if provider == "facebook" && providerConf.Name == "facebook" {
-			fp := facebook.New(providerConf.Client, providerConf.Secret, providerConf.Url)
+			fp := facebook.New(providerConf.Client, providerConf.Secret, providerConf.URL)
 			loginUrl, err := fp.GetBeginAuthURL(nil, nil)
 			if err != nil {
 				return "", err
@@ -87,7 +87,7 @@ func getLoginURL(provider string, config *config.Config) (string, error) {
 func getUser(provider string, url string, config *config.Config) (common.User, error) {
 	for _, providerConf := range config.Auth.Providers {
 		if provider == "google" && providerConf.Name == "google" {
-			gp := google.New(providerConf.Client, providerConf.Secret, providerConf.Url)
+			gp := google.New(providerConf.Client, providerConf.Secret, providerConf.URL)
 			credentials, err := gp.CompleteAuth(objx.MustFromURLQuery(url))
 			user, err := gp.GetUser(credentials)
 			if err != nil {
@@ -96,7 +96,7 @@ func getUser(provider string, url string, config *config.Config) (common.User, e
 			return user, nil
 		}
 		if provider == "facebook" && providerConf.Name == "facebook" {
-			fp := facebook.New(providerConf.Client, providerConf.Secret, providerConf.Url)
+			fp := facebook.New(providerConf.Client, providerConf.Secret, providerConf.URL)
 			credentials, err := fp.CompleteAuth(objx.MustFromURLQuery(url))
 			user, err := fp.GetUser(credentials)
 			if err != nil {
