@@ -19,6 +19,8 @@ func (ah *authHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	}
 	ah.next.ServeHTTP(w, r)
 }
+
+// CheckCookie checks whether auth cookie is already set or not
 func CheckCookie(w http.ResponseWriter, r *http.Request) int {
 	_, err := r.Cookie("auth")
 	if err == http.ErrNoCookie {
@@ -28,9 +30,13 @@ func CheckCookie(w http.ResponseWriter, r *http.Request) int {
 	}
 	return 0
 }
+
+// MustAuth function calls real handler after checking authentication
 func MustAuth(handler http.Handler) http.Handler {
 	return &authHandler{next: handler}
 }
+
+// SetupAuth will check security key and then create providers
 func SetupAuth(conf *config.Config) {
 	gomniauth.SetSecurityKey(conf.Auth.Security)
 	for _, provider := range conf.Auth.Providers {
