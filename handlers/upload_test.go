@@ -1,13 +1,12 @@
 package handlers
 
 import (
-	"testing"
-	"net/http"
-	"strings"
-	"net/http/httptest"
 	"github.com/stretchr/testify/assert"
-	"fmt"
 	"mime/multipart"
+	"net/http"
+	"net/http/httptest"
+	"strings"
+	"testing"
 )
 
 func TestUploadHandlerServeHTTPWitInvalidForm(t *testing.T) {
@@ -19,8 +18,7 @@ func TestUploadHandlerServeHTTPWitInvalidForm(t *testing.T) {
 	writer := httptest.NewRecorder()
 	uploadHandler.ServeHTTP(writer, request)
 	assert.Equal(t, writer.Code, http.StatusInternalServerError)
-	fmt.Printf("%+v", writer.Body)
-	assert.Equal(t, "User not found in the request\n", writer.Body.String())
+	assert.Equal(t, "User not found in the request\nrequest Content-Type isn't multipart/form-data\n", writer.Body.String())
 }
 
 func TestUploadHandlerServeHTTPWitInvalidFileInForm(t *testing.T) {
@@ -29,7 +27,7 @@ func TestUploadHandlerServeHTTPWitInvalidFileInForm(t *testing.T) {
 	request.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	formValue := make(map[string][]string)
 	fileValue := make(map[string][]*multipart.FileHeader)
-	request.MultipartForm = &multipart.Form{Value:formValue,File: fileValue}
+	request.MultipartForm = &multipart.Form{Value: formValue, File: fileValue}
 	assert.NoError(t, err)
 	uploadHandler := uploadHandler{}
 	writer := httptest.NewRecorder()
@@ -37,6 +35,3 @@ func TestUploadHandlerServeHTTPWitInvalidFileInForm(t *testing.T) {
 	assert.Equal(t, writer.Code, http.StatusInternalServerError)
 	assert.Equal(t, "http: no such file\n", writer.Body.String())
 }
-
-
-
