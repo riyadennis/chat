@@ -15,14 +15,17 @@ import (
 var ctx context.Context
 
 func main() {
-	rootPath, _ := filepath.Abs("templates")
+	rootPath, err := filepath.Abs("templates")
+	if err != nil {
+		logrus.Errorf("unable to open template files")
+	}
 	//making the folder templates accessible
 	fs := http.FileServer(http.Dir(rootPath))
 	http.Handle("/templates", fs)
 
 	conf, err := config.ParseConfig("config.yaml")
 	if err != nil {
-		logrus.Errorf("Invalid config %s", err.Error())
+		logrus.Errorf("invalid config %s", err.Error())
 	}
 
 	r := mux.NewRouter()
@@ -31,7 +34,7 @@ func main() {
 
 	handlers.SetupAuth(conf)
 
-	trace := flag.Bool("traceStatus", false, "Error handling and tracing")
+	trace := flag.Bool("traceStatus", false, "error handling and tracing")
 	flag.Parse()
 
 	router.Run(*trace)
