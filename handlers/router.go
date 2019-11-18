@@ -3,8 +3,8 @@ package handlers
 import (
 	"net/http"
 
-	"github.com/chat/config"
 	"github.com/gorilla/mux"
+	"github.com/riyadennis/chat/config"
 	"github.com/sirupsen/logrus"
 )
 

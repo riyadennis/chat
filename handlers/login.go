@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"strings"
 
-	"github.com/chat/config"
 	"github.com/pkg/errors"
+	"github.com/riyadennis/chat/config"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/gomniauth/common"
 	"github.com/stretchr/gomniauth/providers/facebook"

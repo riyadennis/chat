@@ -6,9 +6,9 @@ import (
 	"os"
 	"time"
 
-	"github.com/chat/entities"
-	"github.com/chat/trace"
 	"github.com/gorilla/websocket"
+	"github.com/riyadennis/chat/entities"
+	"github.com/riyadennis/chat/trace"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/objx"
 )

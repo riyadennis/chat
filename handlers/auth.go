@@ -1,7 +1,7 @@
 package handlers
 
 import (
-	"github.com/chat/config"
+	"github.com/riyadennis/chat/config"
 	"github.com/stretchr/gomniauth"
 	"net/http"
 )

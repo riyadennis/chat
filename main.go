@@ -6,9 +6,9 @@ import (
 	"net/http"
 	"path/filepath"
 
-	"github.com/chat/config"
-	"github.com/chat/handlers"
 	"github.com/gorilla/mux"
+	"github.com/riyadennis/chat/config"
+	"github.com/riyadennis/chat/handlers"
 	"github.com/sirupsen/logrus"
 )
 

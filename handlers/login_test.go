@@ -5,7 +5,7 @@ import (
 	"net/http/httptest"
 	"testing"
 
-	"github.com/chat/config"
+	"github.com/riyadennis/chat/config"
 	"github.com/stretchr/testify/assert"
 )
 
