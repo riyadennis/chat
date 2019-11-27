@@ -37,9 +37,9 @@ func MustAuth(handler http.Handler) http.Handler {
 }
 
 // SetupAuth will check security key and then create providers
-func SetupAuth(conf *config.Config) {
-	gomniauth.SetSecurityKey(conf.Auth.Security)
-	for _, provider := range conf.Auth.Providers {
+func SetupAuth(auth *config.Auth) {
+	gomniauth.SetSecurityKey(auth.Security)
+	for _, provider := range auth.Providers {
 		gomniauth.WithProviders(
 			provider.GetGoogleProvider(),
 			provider.GetFaceBookProvider(),

@@ -9,3 +9,4 @@ auth:
       client: 215174072356731
       secret: e3da0b384113b778e5985abc6a8ee62b
       url: http://localhost:8080/auth/callback/facebook/
+template_path: templates

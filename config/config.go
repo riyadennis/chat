@@ -10,7 +10,8 @@ import (
 
 // Config struct holds configuration read from the file
 type Config struct {
-	Auth Auth
+	Auth *Auth
+	TemplatePath string
 }
 
 // Auth struct holds authentication information
