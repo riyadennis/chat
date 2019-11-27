@@ -31,12 +31,16 @@ func (lh loginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 	provider := uri[3]
 	switch action {
 	case "login":
-		loginUrl, err := getLoginURL(provider, lh.Config)
+		pr := checkProvider(provider, lh.Config.Auth.Providers)
+		if pr == nil{
+			http.Error(w, "invalid provider", http.StatusBadRequest)
+		}
+		l, err := loginUrl(pr)
 		if err != nil {
 			http.Error(w, err.Error(), http.StatusBadRequest)
 			logrus.Error(err)
 		}
-		w.Header().Set("Location", loginUrl)
+		w.Header().Set("Location", l)
 		w.WriteHeader(http.StatusTemporaryRedirect)
 	case "callback":
 		user, err := getUser(provider, r.URL.RawQuery, lh.Config)
@@ -58,32 +62,34 @@ func (lh loginHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 
 }
 
-/**
-Gets the login url from the provider
-*/
-func getLoginURL(provider string, config *config.Config) (string, error) {
-	loginUrl := ""
-	for _, providerConf := range config.Auth.Providers {
-		if provider == "google" && providerConf.Name == "google" {
-			gp := google.New(providerConf.Client, providerConf.Secret, providerConf.URL)
-			loginUrl, err := gp.GetBeginAuthURL(nil, nil)
-			if err != nil {
-				return "", err
-			}
-			return loginUrl, nil
+func loginUrl(pr *config.Provider) (string, error){
+	switch pr.Name {
+	case "google": gp := google.New(pr.Client, pr.Secret, pr.URL)
+		loginUrl, err := gp.GetBeginAuthURL(nil, nil)
+		if err != nil {
+			return "", err
 		}
-		if provider == "facebook" && providerConf.Name == "facebook" {
-			fp := facebook.New(providerConf.Client, providerConf.Secret, providerConf.URL)
-			loginUrl, err := fp.GetBeginAuthURL(nil, nil)
-			if err != nil {
-				return "", err
-			}
-			return loginUrl, nil
+		return loginUrl, err
+	case "facebook":
+		fp := facebook.New(pr.Client, pr.Secret, pr.URL)
+		loginUrl, err := fp.GetBeginAuthURL(nil, nil)
+		if err != nil {
+			return "", err
+		}
+		return loginUrl, err
+	}
+	return "", fmt.Errorf("cannot fetch login url for %v", pr)
+}
+
+func checkProvider(provider string, providers []*config.Provider ) *config.Provider{
+	for _, pr := range providers {
+		if pr.Name == provider{
+			return pr
 		}
 	}
-
-	return loginUrl, nil
+	return nil
 }
+
 func getUser(provider string, url string, config *config.Config) (common.User, error) {
 	for _, providerConf := range config.Auth.Providers {
 		if provider == "google" && providerConf.Name == "google" {
@@ -107,6 +113,7 @@ func getUser(provider string, url string, config *config.Config) (common.User, e
 	}
 	return nil, errors.New("Invalid provider")
 }
+
 func createCookieFromUser(user common.User) *http.Cookie {
 	authCookie := objx.New(map[string]interface{}{
 		"name":       user.Name(),

@@ -21,6 +21,7 @@ func (s *Server) Run() error{
 	r := mux.NewRouter()
 	router := handlers.NewRouter(r, s.Address, conf)
 	router.Run(s.Trace)
+	return nil
 }
 
 func LoadTemplates(path string) error{

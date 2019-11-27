@@ -17,7 +17,7 @@ type Config struct {
 // Auth struct holds authentication information
 type Auth struct {
 	Security  string
-	Providers []Provider
+	Providers  []*Provider
 }
 
 // Provider struct has the details of the providers like facebook, google etc
