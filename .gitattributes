@@ -1,1 +1,1 @@
-*.yaml filter=git-crypt diff=git-crypt
+config.yaml filter=git-crypt diff=git-crypt
