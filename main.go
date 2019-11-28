@@ -8,7 +8,7 @@ import (
 	"github.com/sirupsen/logrus"
 )
 var (
-	address = flag.String("address", ":8084", "Port to which web server will listen")
+	address = flag.String("address", ":8080", "Port to which web server will listen")
 	trace = flag.Bool("traceStatus", false, "error handling and tracing")
 )
 
