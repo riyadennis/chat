@@ -1,5 +1,5 @@
 auth:
-  security: qBAbLFsUqEq85IEzlkebtqKde0Pybyw7ddzV8Gnk13JD3d1qMo1vBilrCV3j7B9k
+  security: ${{ secrets.security }}
   providers:
     - name: google
       client: ${{ secrets.google_client }}
