@@ -2,4 +2,4 @@
 vendor/*
 avatars/*
 .vscode/*
-
+config.yaml
