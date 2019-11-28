@@ -4,6 +4,7 @@ import (
 	"github.com/gorilla/mux"
 	"github.com/riyadennis/chat/config"
 	"github.com/riyadennis/chat/handlers"
+	"github.com/sirupsen/logrus"
 	"net/http"
 	"path/filepath"
 )
@@ -11,15 +12,23 @@ import (
 type Server struct {
 	Address string
 	Trace bool
+	Config *config.Config
 }
-
-func (s *Server) Run() error{
-	conf, err := config.ParseConfig("config.yaml")
-	if err != nil {
-		return err
+func NewServer(address string, trace bool, conf *config.Config) *Server{
+	return &Server{
+		Address: address,
+		Trace:   trace,
+		Config:  conf,
 	}
+}
+func (s *Server) Run() error{
+	err := LoadTemplates(s.Config.TemplatePath)
+	if err != nil {
+		logrus.Errorf("unable to open template files :: %v", err)
+	}
+	handlers.SetupAuth(s.Config.Auth)
 	r := mux.NewRouter()
-	router := handlers.NewRouter(r, s.Address, conf)
+	router := handlers.NewRouter(r, s.Address, s.Config)
 	router.Run(s.Trace)
 	return nil
 }
