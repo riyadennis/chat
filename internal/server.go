@@ -14,6 +14,7 @@ type Server struct {
 	Trace bool
 	Config *config.Config
 }
+
 func NewServer(address string, trace bool, conf *config.Config) *Server{
 	return &Server{
 		Address: address,
@@ -21,6 +22,7 @@ func NewServer(address string, trace bool, conf *config.Config) *Server{
 		Config:  conf,
 	}
 }
+
 func (s *Server) Run() error{
 	err := LoadTemplates(s.Config.TemplatePath)
 	if err != nil {
