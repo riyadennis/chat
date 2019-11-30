@@ -13,6 +13,7 @@ var (
 )
 
 func main() {
+	flag.Parse()
 	conf, err := config.ParseConfig("config.yaml")
 	if err != nil {
 		logrus.Errorf("invalid config :: %v", err)
