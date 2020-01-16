@@ -11,7 +11,7 @@ func TestNew(t *testing.T) {
 	if tracer == nil {
 		t.Error("Tracer should not return null")
 	} else {
-		Trace("Hello Trace Package")
+		tracer.Trace("Hello Trace Package")
 		if buf.String() != "Hello Trace Package\n" {
 			t.Errorf("Trace should not write %s", buf.String())
 		}
@@ -19,5 +19,5 @@ func TestNew(t *testing.T) {
 }
 func TestOff(t *testing.T) {
 	var slientTracer = Off()
-	Trace("Nothing")
+	slientTracer.Trace("nil")
 }
