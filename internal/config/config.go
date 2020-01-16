@@ -1,6 +1,7 @@
 package config
 
 import (
+	"github.com/stretchr/gomniauth/common"
 	"github.com/stretchr/gomniauth/providers/facebook"
 	"github.com/stretchr/gomniauth/providers/google"
 	"gopkg.in/yaml.v2"
@@ -28,20 +29,17 @@ type Provider struct {
 	URL    string
 }
 
-// GetGoogleProvider creates google client
-func (p Provider) GetGoogleProvider() *google.GoogleProvider {
-	if p.Name == "google" {
+func (p Provider) GetProvider()common.Provider{
+	switch p.Name {
+	case "google":
+		// creates google client
 		return google.New(p.Client, p.Secret, p.URL)
-	}
-	return nil
-}
-
-// GetFaceBookProvider creates facbook client
-func (p Provider) GetFaceBookProvider() *facebook.FacebookProvider {
-	if p.Name == "facebook" {
+	case "facebook":
+		// creates facebook client
 		return facebook.New(p.Client, p.Secret, p.URL)
+	default:
+		return nil
 	}
-	return nil
 }
 
 // ParseConfig gets the config file and create a struct

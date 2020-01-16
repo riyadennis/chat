@@ -3,6 +3,7 @@ package handlers
 import (
 	"github.com/riyadennis/chat/internal/config"
 	"github.com/stretchr/gomniauth"
+	"github.com/stretchr/gomniauth/common"
 	"net/http"
 )
 
@@ -39,10 +40,10 @@ func MustAuth(handler http.Handler) http.Handler {
 // SetupAuth will check security key and then create providers
 func SetupAuth(auth *config.Auth) {
 	gomniauth.SetSecurityKey(auth.Security)
+	var providerList []common.Provider
 	for _, provider := range auth.Providers {
-		gomniauth.WithProviders(
-			provider.GetGoogleProvider(),
-			provider.GetFaceBookProvider(),
-		)
+		providerList = append(providerList, provider.GetProvider())
 	}
+	gomniauth.WithProviders(providerList...)
+
 }

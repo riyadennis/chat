@@ -14,7 +14,7 @@ func TestProviderGetFaceBookProvider(t *testing.T) {
 		Secret: "THISISASCERET",
 		URL:    "http://localhost:8080/auth/callback/facebook/",
 	}
-	facebookProvider := provider.GetFaceBookProvider()
+	facebookProvider := provider.GetProvider()
 	assert.IsType(t, facebookProvider, &facebook.FacebookProvider{})
 	assert.Equal(t, facebookProvider.Name(), "facebook")
 }
@@ -25,7 +25,7 @@ func TestProviderGetGoogleProvider(t *testing.T) {
 		Secret: "THISISASCERET",
 		URL:    "http://localhost:8080/auth/callback/google/",
 	}
-	googleProvider := provider.GetGoogleProvider()
+	googleProvider := provider.GetProvider()
 	assert.IsType(t, googleProvider, &google.GoogleProvider{})
 	assert.Equal(t, googleProvider.Name(), "google")
 }
