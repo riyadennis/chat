@@ -9,8 +9,8 @@ import (
 	"testing"
 	//"net/url"
 	"fmt"
-	"net/url"
 	"net/http/cookiejar"
+	"net/url"
 )
 
 func TestNewRoom(t *testing.T) {

@@ -8,7 +8,7 @@ import (
 
 	"github.com/gorilla/websocket"
 	"github.com/riyadennis/chat/entities"
-	"github.com/riyadennis/chat/trace"
+	"github.com/riyadennis/chat/internal/trace"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/objx"
 )
