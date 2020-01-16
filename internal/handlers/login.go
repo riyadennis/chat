@@ -6,7 +6,7 @@ import (
 	"strings"
 
 	"github.com/pkg/errors"
-	"github.com/riyadennis/chat/config"
+	"github.com/riyadennis/chat/internal/config"
 	"github.com/sirupsen/logrus"
 	"github.com/stretchr/gomniauth/common"
 	"github.com/stretchr/gomniauth/providers/facebook"
@@ -81,7 +81,7 @@ func loginUrl(pr *config.Provider) (string, error){
 	return "", fmt.Errorf("cannot fetch login url for %v", pr)
 }
 
-func checkProvider(provider string, providers []*config.Provider ) *config.Provider{
+func checkProvider(provider string, providers []*config.Provider) *config.Provider {
 	for _, pr := range providers {
 		if pr.Name == provider{
 			return pr

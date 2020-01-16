@@ -3,8 +3,8 @@ package main
 import (
 	"flag"
 
-	"github.com/riyadennis/chat/config"
 	"github.com/riyadennis/chat/internal"
+	"github.com/riyadennis/chat/internal/config"
 	"github.com/sirupsen/logrus"
 )
 var (

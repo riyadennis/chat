@@ -2,7 +2,7 @@ package internal
 
 import (
 	"github.com/gorilla/mux"
-	"github.com/riyadennis/chat/config"
+	"github.com/riyadennis/chat/internal/config"
 	"github.com/riyadennis/chat/internal/handlers"
 	"github.com/sirupsen/logrus"
 	"net/http"
