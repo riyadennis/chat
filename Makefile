@@ -7,7 +7,7 @@ test:
 unlock:
 	git-crypt unlock
 docker-build:
-	docker build -t chat .
+	docker build -t riyadennis/chat .
 docker-run:
 	docker run --rm -p 8080:8080  chat
 docker-push:
